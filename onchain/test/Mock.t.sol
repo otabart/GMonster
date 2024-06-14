@@ -2,6 +2,7 @@
 pragma solidity >=0.8.23 <0.9.0;
 
 import {BaseTest, console2} from "./BaseTest.sol";
+import {Mock} from "../contracts/Mock.sol";
 
 contract MockTest is BaseTest {
     Mock internal mock;
