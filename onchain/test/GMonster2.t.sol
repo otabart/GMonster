@@ -48,4 +48,6 @@ contract GMonster2Test is BaseTest {
         assertEq(_suceededChallengeCount, 0);
         assertEq(_continuousSuceededCount, 0);
     }
+
+    //TODO test continuous challenge count
 }

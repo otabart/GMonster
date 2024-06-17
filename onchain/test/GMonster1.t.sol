@@ -15,7 +15,7 @@ contract GMonster1Test is BaseTest {
         gmon = new GMonsterMock();
     }
 
-    function test_getLostChallengeCount_Success0() external view {
+    function test_getLostCountAndIsSpan_Success0() external view {
         Challenge memory _challenge = Challenge({
             deposit: gmon.DEPOSIT(),
             initialChallengeTime: NINE_JST,
@@ -24,7 +24,7 @@ contract GMonster1Test is BaseTest {
             continuousSuceededCount: 0
         });
         uint _timestamp = NINE_JST;
-        (uint _lostChallengeCount, ) = gmon.getLostChallengeCount(
+        (uint _lostChallengeCount, ) = gmon.getLostCountAndIsSpan(
             _challenge,
             _timestamp
         );
@@ -32,7 +32,7 @@ contract GMonster1Test is BaseTest {
         assertEq(gmon.judgeFailOrNot(_challenge, _timestamp), false);
     }
 
-    function test_getLostChallengeCount_Success1() external view {
+    function test_getLostCountAndIsSpan_Success1() external view {
         Challenge memory _challenge = Challenge({
             deposit: gmon.DEPOSIT(),
             initialChallengeTime: NINE_JST,
@@ -41,7 +41,7 @@ contract GMonster1Test is BaseTest {
             continuousSuceededCount: 0
         });
         uint _timestamp = NINE_JST + 1 days;
-        (uint _lostChallengeCount, ) = gmon.getLostChallengeCount(
+        (uint _lostChallengeCount, ) = gmon.getLostCountAndIsSpan(
             _challenge,
             _timestamp
         );
@@ -49,7 +49,7 @@ contract GMonster1Test is BaseTest {
         assertEq(gmon.judgeFailOrNot(_challenge, _timestamp), false);
     }
 
-    function test_getLostChallengeCount_Success2() external view {
+    function test_getLostCountAndIsSpan_Success2() external view {
         Challenge memory _challenge = Challenge({
             deposit: gmon.DEPOSIT(),
             initialChallengeTime: NINE_JST,
@@ -58,7 +58,7 @@ contract GMonster1Test is BaseTest {
             continuousSuceededCount: 0
         });
         uint _timestamp = NINE_JST + 3 days;
-        (uint _lostChallengeCount, ) = gmon.getLostChallengeCount(
+        (uint _lostChallengeCount, ) = gmon.getLostCountAndIsSpan(
             _challenge,
             _timestamp
         );
@@ -66,7 +66,7 @@ contract GMonster1Test is BaseTest {
         assertEq(gmon.judgeFailOrNot(_challenge, _timestamp), false);
     }
 
-    function test_getLostChallengeCount_Success3() external view {
+    function test_getLostCountAndIsSpan_Success3() external view {
         Challenge memory _challenge = Challenge({
             deposit: gmon.DEPOSIT(),
             initialChallengeTime: NINE_JST,
@@ -75,7 +75,7 @@ contract GMonster1Test is BaseTest {
             continuousSuceededCount: 0
         });
         uint _timestamp = NINE_JST + 3 days;
-        (uint _lostChallengeCount, ) = gmon.getLostChallengeCount(
+        (uint _lostChallengeCount, ) = gmon.getLostCountAndIsSpan(
             _challenge,
             _timestamp
         );
@@ -83,7 +83,7 @@ contract GMonster1Test is BaseTest {
         assertEq(gmon.judgeFailOrNot(_challenge, _timestamp), false);
     }
 
-    function test_getLostChallengeCount_Success4() external view {
+    function test_getLostCountAndIsSpan_Success4() external view {
         //Todays challenge is suceeded
         Challenge memory _challenge = Challenge({
             deposit: gmon.DEPOSIT(),
@@ -93,7 +93,7 @@ contract GMonster1Test is BaseTest {
             continuousSuceededCount: 0
         });
         uint _timestamp = NINE_JST + 3 days;
-        (uint _lostChallengeCount, ) = gmon.getLostChallengeCount(
+        (uint _lostChallengeCount, ) = gmon.getLostCountAndIsSpan(
             _challenge,
             _timestamp
         );
@@ -101,7 +101,7 @@ contract GMonster1Test is BaseTest {
         assertEq(gmon.judgeFailOrNot(_challenge, _timestamp), false);
     }
 
-    function test_getLostChallengeCount_Success5() external view {
+    function test_getLostCountAndIsSpan_Success5() external view {
         Challenge memory _challenge = Challenge({
             deposit: gmon.DEPOSIT(),
             initialChallengeTime: NINE_JST,
@@ -110,7 +110,7 @@ contract GMonster1Test is BaseTest {
             continuousSuceededCount: 0
         });
         uint _timestamp = NINE_JST + 3 days + 1; // missed 4th day
-        (uint _lostChallengeCount, ) = gmon.getLostChallengeCount(
+        (uint _lostChallengeCount, ) = gmon.getLostCountAndIsSpan(
             _challenge,
             _timestamp
         );
@@ -118,7 +118,7 @@ contract GMonster1Test is BaseTest {
         assertEq(gmon.judgeFailOrNot(_challenge, _timestamp), false);
     }
 
-    function test_getLostChallengeCount_Fail1() external view {
+    function test_getLostCountAndIsSpan_Fail1() external view {
         Challenge memory _challenge = Challenge({
             deposit: gmon.DEPOSIT(),
             initialChallengeTime: NINE_JST,
@@ -127,7 +127,7 @@ contract GMonster1Test is BaseTest {
             continuousSuceededCount: 0
         });
         uint _timestamp = NINE_JST + 3 days + 1; // missed 4th day
-        (uint _lostChallengeCount, ) = gmon.getLostChallengeCount(
+        (uint _lostChallengeCount, ) = gmon.getLostCountAndIsSpan(
             _challenge,
             _timestamp
         );

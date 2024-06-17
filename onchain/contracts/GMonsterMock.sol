@@ -6,11 +6,11 @@ import {GMonster, Challenge} from "./GMonster.sol";
 // import {console2} from "forge-std/console2.sol";
 
 contract GMonsterMock is GMonster {
-    function getLostChallengeCount(
+    function getLostCountAndIsSpan(
         Challenge memory _challenge,
         uint _timestamp
     ) public view returns (uint, bool) {
-        return _getLostChallengeCount(_challenge, _timestamp);
+        return _getLostCountAndIsSpan(_challenge, _timestamp);
     }
 
     function judgeFailOrNot(

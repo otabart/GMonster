@@ -30,43 +30,21 @@ contract GMonster3SenarioTest is BaseTest {
         assertEq(address(gmon).balance, 0);
     }
 
-    //TODO assert balance
     function test_senario_Fail1() external {
         gmon.deposit{value: DEPOSIT}(NINE_JST);
         assertEq(address(gmon).balance, DEPOSIT);
+        //Not robbable
         vm.warp(NINE_JST + 3 days);
         assertEq(gmon.robbable(address(this)), false);
+        //Robbable
         vm.warp(NINE_JST + 3 days + 1);
         assertEq(gmon.robbable(address(this)), true);
+        //Alice rob
         vm.startPrank(alice);
         gmon.deposit{value: DEPOSIT}(NINE_JST + 4 days);
+        uint _oldAliceBal = alice.balance;
         gmon.rob(address(this));
         vm.stopPrank();
+        assertEq(alice.balance, _oldAliceBal + DEPOSIT);
     }
-
-    function test_transfer() external {
-        TransferMock mock = new TransferMock();
-        vm.startPrank(alice);
-        console2.log(alice.balance);
-        address(mock).call{value: 2 ether}("");
-        console2.log(alice.balance);
-        mock.transfer(1 ether);
-        console2.log(alice.balance);
-        vm.stopPrank();
-    }
-}
-
-contract TransferMock {
-    function transfer(uint _value) public {
-        (bool success, ) = msg.sender.call{value: _value}("");
-        require(success, "Transfer failed.");
-    }
-
-    function transfer2(uint _value) public {
-        payable(msg.sender).transfer(_value);
-        (bool success, ) = msg.sender.call{value: _value}("");
-        require(success, "Transfer failed.");
-    }
-
-    receive() external payable {}
 }

@@ -19,6 +19,16 @@ struct Challenge {
                             EVENTS
 //////////////////////////////////////////////////////////////*/
 
+event Deposited(
+    address indexed challenger,
+    uint deposit,
+    uint initialChallengeTime
+);
+event Challenged(address indexed challenger, uint challengeTime);
+event Robbed(address indexed robber, address indexed target, uint robbedAmount);
+event Withdrawn(address indexed challenger, uint withdrawAmount);
+
+
 //TODO calculate success and fail term count
 
 contract GMonster {
@@ -69,13 +79,8 @@ contract GMonster {
     /*//////////////////////////////////////////////////////////////
                             EXTERNAL UPDATE
     //////////////////////////////////////////////////////////////*/
-
     function deposit(uint _initialChallengeTime) public payable {
         require(msg.value == DEPOSIT, ERROR_DEPOSIT1);
-        console2.log(
-            "challenges[msg.sender].deposit",
-            challenges[msg.sender].deposit
-        );
         require(challenges[msg.sender].deposit == 0, ERROR_DEPOSIT2);
         require(_initialChallengeTime > block.timestamp, ERROR_DEPOSIT3);
         challenges[msg.sender] = Challenge({
@@ -85,6 +90,7 @@ contract GMonster {
             suceededChallengeCount: 0,
             continuousSuceededCount: 0
         });
+        emit Deposited(msg.sender, msg.value, _initialChallengeTime);
     }
 
     function challenge() external {
@@ -105,7 +111,7 @@ contract GMonster {
         (
             uint _lostChallengeCount,
             bool _isChallengeSpan
-        ) = _getLostChallengeCount(_challenge, block.timestamp);
+        ) = _getLostCountAndIsSpan(_challenge, block.timestamp);
         require(_isChallengeSpan, ERROR_CHALLENGE4);
         require(
             _lostChallengeCount <= LOSTABLE_CHALLENGE_COUNT,
@@ -128,6 +134,7 @@ contract GMonster {
             suceededChallengeCount: _challenge.suceededChallengeCount + 1,
             continuousSuceededCount: _continuousSuceededCount
         });
+        emit Challenged(msg.sender, block.timestamp);
     }
 
     function withdraw() public returns (uint) {
@@ -159,6 +166,8 @@ contract GMonster {
 
         (bool success, ) = msg.sender.call{value: _deposited}("");
         require(success, ERROR_WITHDRAW4);
+
+        emit Withdrawn(msg.sender, _deposited);
 
         //Return for reChallenge
         return _initialChallengeTime;
@@ -194,15 +203,33 @@ contract GMonster {
         (bool success, ) = msg.sender.call{value: _deposited}("");
         require(success, ERROR_ROB3);
 
-        //TODO event
+        emit Robbed(msg.sender, _target, _deposited);
     }
 
     /*//////////////////////////////////////////////////////////////
                              EXTERNAL VIEW
     //////////////////////////////////////////////////////////////*/
-    function robbable(address _challenger) public view returns (bool) {
+    function robbable(address _challenger) external view returns (bool) {
         Challenge memory _challenge = challenges[_challenger];
         return _judgeFailOrNot(_challenge, block.timestamp);
+    }
+
+    function getLostCount(address _challenger) external view returns (uint) {
+        Challenge memory _challenge = challenges[_challenger];
+        (uint _lostChallengeCount, ) = _getLostCountAndIsSpan(
+            _challenge,
+            block.timestamp
+        );
+        return _lostChallengeCount;
+    }
+
+    function isChallengeSpan(address _challenger) external view returns (bool) {
+        Challenge memory _challenge = challenges[_challenger];
+        (, bool _isChallengeSpan) = _getLostCountAndIsSpan(
+            _challenge,
+            block.timestamp
+        );
+        return _isChallengeSpan;
     }
 
     /*//////////////////////////////////////////////////////////////
@@ -211,7 +238,7 @@ contract GMonster {
     /*//////////////////////////////////////////////////////////////
                              INTERNAL VIEW
     //////////////////////////////////////////////////////////////*/
-    function _getLostChallengeCount(
+    function _getLostCountAndIsSpan(
         Challenge memory _challenge,
         uint _timestamp
     )
@@ -260,14 +287,12 @@ contract GMonster {
         Challenge memory _challenge,
         uint _timestamp
     ) internal view returns (bool) {
-        console2.log("Deposit: %d", _challenge.deposit);
         if (_challenge.deposit < DEPOSIT) return false;
 
-        (uint _lostChallengeCount, ) = _getLostChallengeCount(
+        (uint _lostChallengeCount, ) = _getLostCountAndIsSpan(
             _challenge,
             _timestamp
         );
-        console2.log("LostChallengeCount: %d", _lostChallengeCount);
         if (_lostChallengeCount > LOSTABLE_CHALLENGE_COUNT) return true;
 
         return false;
