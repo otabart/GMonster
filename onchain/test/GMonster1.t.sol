@@ -5,7 +5,7 @@ import {BaseTest, console2} from "./BaseTest.sol";
 import {GMonsterMock} from "../contracts/GMonsterMock.sol";
 import {Challenge, GMonster} from "../contracts/GMonster.sol";
 
-contract GMonsterTest is BaseTest {
+contract GMonster1Test is BaseTest {
     GMonsterMock internal gmon;
     uint internal NINE_JST = 1718323200; // 2024-06-14 9:00 AM in GMT+9
 
@@ -23,11 +23,13 @@ contract GMonsterTest is BaseTest {
             suceededChallengeCount: 0,
             continuousSuceededCount: 0
         });
+        uint _timestamp = NINE_JST;
         (uint _lostChallengeCount, ) = gmon.getLostChallengeCount(
             _challenge,
-            NINE_JST
+            _timestamp
         );
         assertEq(_lostChallengeCount, 0);
+        assertEq(gmon.judgeFailOrNot(_challenge, _timestamp), false);
     }
 
     function test_getLostChallengeCount_Success1() external view {
@@ -38,11 +40,13 @@ contract GMonsterTest is BaseTest {
             suceededChallengeCount: 1,
             continuousSuceededCount: 0
         });
+        uint _timestamp = NINE_JST + 1 days;
         (uint _lostChallengeCount, ) = gmon.getLostChallengeCount(
             _challenge,
-            NINE_JST + 1 days
+            _timestamp
         );
         assertEq(_lostChallengeCount, 0);
+        assertEq(gmon.judgeFailOrNot(_challenge, _timestamp), false);
     }
 
     function test_getLostChallengeCount_Success2() external view {
@@ -53,11 +57,13 @@ contract GMonsterTest is BaseTest {
             suceededChallengeCount: 0,
             continuousSuceededCount: 0
         });
+        uint _timestamp = NINE_JST + 3 days;
         (uint _lostChallengeCount, ) = gmon.getLostChallengeCount(
             _challenge,
-            NINE_JST + 3 days
+            _timestamp
         );
         assertEq(_lostChallengeCount, 3);
+        assertEq(gmon.judgeFailOrNot(_challenge, _timestamp), false);
     }
 
     function test_getLostChallengeCount_Success3() external view {
@@ -68,11 +74,13 @@ contract GMonsterTest is BaseTest {
             suceededChallengeCount: 1,
             continuousSuceededCount: 0
         });
+        uint _timestamp = NINE_JST + 3 days;
         (uint _lostChallengeCount, ) = gmon.getLostChallengeCount(
             _challenge,
-            NINE_JST + 3 days
+            _timestamp
         );
         assertEq(_lostChallengeCount, 2);
+        assertEq(gmon.judgeFailOrNot(_challenge, _timestamp), false);
     }
 
     function test_getLostChallengeCount_Success4() external view {
@@ -84,11 +92,13 @@ contract GMonsterTest is BaseTest {
             suceededChallengeCount: 1,
             continuousSuceededCount: 0
         });
+        uint _timestamp = NINE_JST + 3 days;
         (uint _lostChallengeCount, ) = gmon.getLostChallengeCount(
             _challenge,
-            NINE_JST + 3 days
+            _timestamp
         );
         assertEq(_lostChallengeCount, 3);
+        assertEq(gmon.judgeFailOrNot(_challenge, _timestamp), false);
     }
 
     function test_getLostChallengeCount_Success5() external view {
@@ -99,10 +109,29 @@ contract GMonsterTest is BaseTest {
             suceededChallengeCount: 1,
             continuousSuceededCount: 0
         });
+        uint _timestamp = NINE_JST + 3 days + 1; // missed 4th day
         (uint _lostChallengeCount, ) = gmon.getLostChallengeCount(
             _challenge,
-            NINE_JST + 3 days + 1
+            _timestamp
         );
         assertEq(_lostChallengeCount, 3);
+        assertEq(gmon.judgeFailOrNot(_challenge, _timestamp), false);
+    }
+
+    function test_getLostChallengeCount_Fail1() external view {
+        Challenge memory _challenge = Challenge({
+            deposit: gmon.DEPOSIT(),
+            initialChallengeTime: NINE_JST,
+            lastChallengeTime: 0,
+            suceededChallengeCount: 0,
+            continuousSuceededCount: 0
+        });
+        uint _timestamp = NINE_JST + 3 days + 1; // missed 4th day
+        (uint _lostChallengeCount, ) = gmon.getLostChallengeCount(
+            _challenge,
+            _timestamp
+        );
+        assertEq(_lostChallengeCount, 4);
+        assertEq(gmon.judgeFailOrNot(_challenge, _timestamp), true);
     }
 }

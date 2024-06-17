@@ -12,4 +12,11 @@ contract GMonsterMock is GMonster {
     ) public view returns (uint, bool) {
         return _getLostChallengeCount(_challenge, _timestamp);
     }
+
+    function judgeFailOrNot(
+        Challenge memory _challenge,
+        uint _timestamp
+    ) public view returns (bool) {
+        return _judgeFailOrNot(_challenge, _timestamp);
+    }
 }
