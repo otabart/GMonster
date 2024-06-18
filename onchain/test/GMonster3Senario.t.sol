@@ -30,6 +30,35 @@ contract GMonster3SenarioTest is BaseTest {
         assertEq(address(gmon).balance, 0);
     }
 
+    //Two persons
+    function test_senario_Success2() external {
+        gmon.deposit{value: DEPOSIT}(NINE_JST);
+        //Alice
+        vm.prank(alice);
+        gmon.deposit{value: DEPOSIT}(NINE_JST + 1 days);
+
+        vm.warp(NINE_JST - 1 hours);
+        gmon.challenge();
+
+        for (uint8 i = 0; i < 20; i++) {
+            vm.warp(NINE_JST - 1 hours + 1 days + (i * 1 days));
+            gmon.challenge();
+            vm.prank(alice);
+            gmon.challenge();
+        }
+
+        //Alice missed one challenge
+
+        assertEq(address(gmon).balance, DEPOSIT * 2);
+        vm.warp(NINE_JST + 20 * 1 days + 1);
+        gmon.withdraw();
+        assertEq(address(gmon).balance, DEPOSIT);
+        vm.warp(NINE_JST + 21 * 1 days + 1);
+        vm.prank(alice);
+        gmon.withdraw();
+        assertEq(address(gmon).balance, 0);
+    }
+
     function test_senario_Fail1() external {
         gmon.deposit{value: DEPOSIT}(NINE_JST);
         assertEq(address(gmon).balance, DEPOSIT);

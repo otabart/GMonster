@@ -43,9 +43,9 @@ contract GMonster {
     string public constant ERROR_CHALLENGE2 =
         "GMonster: Challenge already finished";
     string public constant ERROR_CHALLENGE3 = "GMonster: Challenge duplicated";
-    string public constant ERROR_CHALLENGE4 = "GMonster: Out challenge span";
-    string public constant ERROR_CHALLENGE5 =
+    string public constant ERROR_CHALLENGE4 =
         "GMonster: Challenge already failed";
+    string public constant ERROR_CHALLENGE5 = "GMonster: Out challenge span";
     string public constant ERROR_WITHDRAW1 = "GMonster: Not deposited";
     string public constant ERROR_WITHDRAW2 =
         "GMonster: Challenge count not enough";
@@ -112,11 +112,11 @@ contract GMonster {
             uint _lostChallengeCount,
             bool _isChallengeSpan
         ) = _getLostCountAndIsSpan(_challenge, block.timestamp);
-        require(_isChallengeSpan, ERROR_CHALLENGE4);
         require(
             _lostChallengeCount <= LOSTABLE_CHALLENGE_COUNT,
-            ERROR_CHALLENGE5
+            ERROR_CHALLENGE4
         );
+        require(_isChallengeSpan, ERROR_CHALLENGE5);
 
         //Judge continuous or not
         uint8 _continuousSuceededCount = _challenge.continuousSuceededCount;
@@ -125,6 +125,8 @@ contract GMonster {
             _challenge.lastChallengeTime + 1 days + CHALLENGE_TIME_SPAN
         ) {
             _continuousSuceededCount += 1;
+        }else{
+            _continuousSuceededCount = 1;        
         }
 
         challenges[msg.sender] = Challenge({
