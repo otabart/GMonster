@@ -220,4 +220,62 @@ contract GMonster2Test is BaseTest {
         assertEq(_suceededChallengeCount, 0);
         assertEq(_continuousSuceededCount, 0);
     }
+
+    function test_fixFail_Fail1() external {
+        vm.expectRevert(bytes(gmon.ERR_FIXFAIL_SEASON()));
+        gmon.fixFail(address(this));
+    }
+
+    function test_fixFail_Fail2() external {
+        vm.warp(seasonEndTime + 1);
+        gmon.fixSeason();
+        vm.expectRevert(bytes(gmon.ERR_FIXFAIL_FIXED()));
+        gmon.fixFail(address(this));
+    }
+
+    function test_fixFail_Fail3() external {
+        vm.warp(NINE_JST);
+        vm.expectRevert(bytes(gmon.ERR_FIXFAIL1()));
+        gmon.fixFail(address(this));
+    }
+
+    function test_fixFail_Fail4() external {
+        gmon.deposit{value: DEPOSIT}(NINE_JST);
+        vm.warp(NINE_JST);
+        vm.expectRevert(bytes(gmon.ERR_FIXFAIL2()));
+        gmon.fixFail(address(this));
+    }
+
+    function test_fixFail_Success1() external {
+        gmon.deposit{value: DEPOSIT}(NINE_JST);
+        //Alice will fix owner's fail
+        vm.startPrank(alice);
+        gmon.deposit{value: DEPOSIT}(NINE_JST + 4 days);
+        vm.stopPrank();
+
+        vm.warp(NINE_JST + 3 days + 1);
+        assertEq(gmon.judgeFailOrNot(address(this)), true);
+
+        //fixFail
+        vm.startPrank(alice);
+        uint _oldAliceBal = alice.balance;
+        gmon.fixFail(address(this));
+        vm.stopPrank();
+
+        //Assertions
+        (
+            uint _deposit,
+            uint _initialChallengeTime,
+            uint _lastChallengeTime,
+            uint8 _suceededChallengeCount,
+            uint8 _continuousSuceededCount
+        ) = gmon.challenges(address(this));
+        assertEq(_deposit, 0);
+        assertEq(_initialChallengeTime, 0);
+        assertEq(_lastChallengeTime, 0);
+        assertEq(_suceededChallengeCount, 0);
+        assertEq(_continuousSuceededCount, 0);
+        assertEq(alice.balance, _oldAliceBal + gmon.FIX_FAIL_FEE());
+        assertEq(gmon.fixFailedCount(), 1);
+    }
 }

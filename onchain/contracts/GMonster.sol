@@ -55,9 +55,11 @@ contract GMonster is Ownable{
         "GMonster: Challenge count not enough";
     string public constant ERR_WITHDRAW4 = "GMonster: Transfer failed";
     string public constant ERR_WITHDRAW5 = "GMonster: Season not fixed";
-    string public constant ERR_ROB1 = "GMonster: Not participated";
-    string public constant ERR_ROB2 = "GMonster: Not robable";
-    string public constant ERR_ROB3 = "GMonster: Transfer failed";
+    string public constant ERR_FIXFAIL1 = "GMonster: Not participated";
+    string public constant ERR_FIXFAIL2 = "GMonster: Not robable";
+    string public constant ERR_FIXFAIL3 = "GMonster: Transfer failed";
+    string public constant ERR_FIXFAIL_SEASON = "GMonster: Season not started";
+    string public constant ERR_FIXFAIL_FIXED = "GMonster: Season already fixed";
     string public constant ERR_FIX1 = "GMonster: Season not ended";
     string public constant ERR_FIX2 = "GMonster: Already fixed";
 
@@ -68,7 +70,6 @@ contract GMonster is Ownable{
     uint public constant FIX_FAIL_FEE = 0.0002 ether; //10%
     uint public constant CHALLENGE_COUNT = 21;
     uint public constant LOSTABLE_CHALLENGE_COUNT = 3;
-    uint public constant LOST_FEE_RATE = 20; //20%
     uint public constant CHALLENGE_TIME_SPAN = 3 hours;
 
     /*//////////////////////////////////////////////////////////////
@@ -196,14 +197,14 @@ contract GMonster is Ownable{
     }
 
     function fixFail(address _target) external payable {
-        require(block.timestamp >= season.seasonStartTimestamp, "GMonster: Season not started");    
-        require(!season.isSeasonFixed, "GMonster: Season already fixed");        
+        require(block.timestamp >= season.seasonStartTimestamp, ERR_FIXFAIL_SEASON);
+        require(!season.isSeasonFixed, ERR_FIXFAIL_FIXED);
         Challenge memory _robberChallenge = challenges[msg.sender];
         //Validations
-        require(_robberChallenge.deposit >= DEPOSIT, ERR_ROB1);
+        require(_robberChallenge.deposit >= DEPOSIT, ERR_FIXFAIL1);
 
         Challenge memory _targetChallenge = challenges[_target];
-        require(_judgeFailOrNot(_targetChallenge, block.timestamp), ERR_ROB2);
+        require(_judgeFailOrNot(_targetChallenge, block.timestamp), ERR_FIXFAIL2);
 
         challenges[_target] = Challenge({
             deposit: 0,
@@ -214,7 +215,7 @@ contract GMonster is Ownable{
         });
 
         (bool success, ) = msg.sender.call{value: FIX_FAIL_FEE}("");
-        require(success, ERR_ROB3);
+        require(success, ERR_FIXFAIL3);
 
         fixFailedCount++;
         emit Fixed(msg.sender, _target);
