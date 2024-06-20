@@ -6,6 +6,8 @@ import {GMonster, Challenge} from "./GMonster.sol";
 // import {console2} from "forge-std/console2.sol";
 
 contract GMonsterMock is GMonster {
+    constructor(uint _seasonStartTimestamp) GMonster(_seasonStartTimestamp) {}
+
     function getLostCountAndIsSpan(
         Challenge memory _challenge,
         uint _timestamp

@@ -12,7 +12,7 @@ contract GMonster1Test is BaseTest {
     /// @dev A function invoked before each test case is run.
     function setUp() public virtual {
         _setUp();
-        gmon = new GMonsterMock();
+        gmon = new GMonsterMock(NINE_JST);
     }
 
     function test_getLostCountAndIsSpan_Success0() external view {

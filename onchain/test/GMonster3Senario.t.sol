@@ -13,7 +13,7 @@ contract GMonster3SenarioTest is BaseTest {
     /// @dev A function invoked before each test case is run.
     function setUp() public virtual {
         _setUp();
-        gmon = new GMonsterMock();
+        gmon = new GMonsterMock(NINE_JST);
     }
 
     //No miss
@@ -64,15 +64,15 @@ contract GMonster3SenarioTest is BaseTest {
         assertEq(address(gmon).balance, DEPOSIT);
         //Not robbable
         vm.warp(NINE_JST + 3 days);
-        assertEq(gmon.robbable(address(this)), false);
+        assertEq(gmon.judgeFailOrNot(address(this)), false);
         //Robbable
         vm.warp(NINE_JST + 3 days + 1);
-        assertEq(gmon.robbable(address(this)), true);
+        assertEq(gmon.judgeFailOrNot(address(this)), true);
         //Alice rob
         vm.startPrank(alice);
         gmon.deposit{value: DEPOSIT}(NINE_JST + 4 days);
         uint _oldAliceBal = alice.balance;
-        gmon.rob(address(this));
+        gmon.fixFail(address(this));
         vm.stopPrank();
         assertEq(alice.balance, _oldAliceBal + DEPOSIT);
     }

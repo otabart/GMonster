@@ -13,7 +13,7 @@ contract GMonster2Test is BaseTest {
     /// @dev A function invoked before each test case is run.
     function setUp() public virtual {
         _setUp();
-        gmon = new GMonsterMock();
+        gmon = new GMonsterMock(NINE_JST);
     }
 
     function test_deposit_Fail1() external {
