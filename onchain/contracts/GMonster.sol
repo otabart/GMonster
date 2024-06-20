@@ -39,28 +39,27 @@ contract GMonster is Ownable{
     /*//////////////////////////////////////////////////////////////
                             ERRORS
     //////////////////////////////////////////////////////////////*/
-    string public constant ERROR_DEPOSIT1 = "GMonster: Invalid deposit amount";
-    string public constant ERROR_DEPOSIT2 = "GMonster: Already deposited";
-    string public constant ERROR_DEPOSIT3 =
-        "GMonster: Invalid initial challenge time";
-    string public constant ERROR_DEPOSIT4 = "GMonster: Season not started";
-    string public constant ERROR_CHALLENGE1 = "GMonster: Not deposited";
-    string public constant ERROR_CHALLENGE2 =
-        "GMonster: Challenge already finished";
-    string public constant ERROR_CHALLENGE3 = "GMonster: Challenge duplicated";
-    string public constant ERROR_CHALLENGE4 =
+    string public constant ERR_DEPOSIT_AMOUNT = "GMonster: Invalid deposit amount";
+    string public constant ERR_DEPOSIT_DUPLICATE = "GMonster: Already deposited";
+    string public constant ERR_DEPOSIT_SEASON =
+        "GMonster: Season already started";
+    string public constant ERR_DEPOSIT_INITIALTIME = "GMonster: Initial time invalid";
+    string public constant ERR_CHALLENGE_NOT_DEPOSITED = "GMonster: Not deposited";
+    string public constant ERR_CHALLENGE_DEPULICATED = "GMonster: Challenge duplicated";
+    string public constant ERR_CHALLENGE_FAILED =
         "GMonster: Challenge already failed";
-    string public constant ERROR_CHALLENGE5 = "GMonster: Out challenge span";
-    string public constant ERROR_WITHDRAW1 = "GMonster: Not deposited";
-    string public constant ERROR_WITHDRAW2 =
+    string public constant ERR_CHALLENGE_OUTOFSPAN = "GMonster: Out challenge span";
+    string public constant ERR_CHALLENGE_OUTOFSEASON = "GMonster: Out of season";
+    string public constant ERR_WITHDRAW1 = "GMonster: Not deposited";
+    string public constant ERR_WITHDRAW2 =
         "GMonster: Challenge count not enough";
-    string public constant ERROR_WITHDRAW3 =
-        "GMonster: Challenge span not finished";
-    string public constant ERROR_WITHDRAW4 = "GMonster: Transfer failed";
-    string public constant ERROR_WITHDRAW5 = "GMonster: Season not ended";
-    string public constant ERROR_ROB1 = "GMonster: Not participated";
-    string public constant ERROR_ROB2 = "GMonster: Not robable";
-    string public constant ERROR_ROB3 = "GMonster: Transfer failed";
+    string public constant ERR_WITHDRAW4 = "GMonster: Transfer failed";
+    string public constant ERR_WITHDRAW5 = "GMonster: Season not fixed";
+    string public constant ERR_ROB1 = "GMonster: Not participated";
+    string public constant ERR_ROB2 = "GMonster: Not robable";
+    string public constant ERR_ROB3 = "GMonster: Transfer failed";
+    string public constant ERR_FIX1 = "GMonster: Season not ended";
+    string public constant ERR_FIX2 = "GMonster: Already fixed";
 
     /*//////////////////////////////////////////////////////////////
                                 CONSTANTS
@@ -77,7 +76,7 @@ contract GMonster is Ownable{
     //////////////////////////////////////////////////////////////*/
     Season public season;
     mapping(address => Challenge) public challenges;
-    address[] public challengerAddresses;
+    mapping(uint8 => address) public challengerAddresses;
     uint8 public maxChallengerCount;
     uint8 public fixFailedCount;
 
@@ -96,10 +95,10 @@ contract GMonster is Ownable{
     }
 
     function fixSeason() public onlyOwner {
-        require(block.timestamp > season.seasonEndTimestamp, "GMonster: Season not ended");
-        require(!season.isSeasonFixed, "GMonster: Already fixed");
-        season.fixedBalance = address(this).balance;
+        require(block.timestamp > season.seasonEndTimestamp, ERR_FIX1);
+        require(!season.isSeasonFixed, ERR_FIX2);
         season.isSeasonFixed = true;
+        season.fixedBalance = address(this).balance;
     }
 
     /*//////////////////////////////////////////////////////////////
@@ -107,11 +106,10 @@ contract GMonster is Ownable{
     //////////////////////////////////////////////////////////////*/
     function deposit(uint _initialChallengeTime) public payable {
         //Validations
-        require(_initialChallengeTime >= season.seasonStartTimestamp, ERROR_DEPOSIT4);
-        require(block.timestamp < season.seasonStartTimestamp, "GMonster: Season already started");
-        require(msg.value == DEPOSIT, ERROR_DEPOSIT1);
-        require(challenges[msg.sender].deposit == 0, ERROR_DEPOSIT2);
-        require(_initialChallengeTime > block.timestamp, ERROR_DEPOSIT3);
+        require(block.timestamp < season.seasonStartTimestamp, ERR_DEPOSIT_SEASON);
+        require(_initialChallengeTime >= season.seasonStartTimestamp, ERR_DEPOSIT_INITIALTIME);
+        require(msg.value == DEPOSIT, ERR_DEPOSIT_AMOUNT);
+        require(challenges[msg.sender].deposit == 0, ERR_DEPOSIT_DUPLICATE);
 
         challenges[msg.sender] = Challenge({
             deposit: msg.value,
@@ -122,7 +120,7 @@ contract GMonster is Ownable{
         });
 
         //Increment challengerAddresses
-        challengerAddresses.push(msg.sender);
+        challengerAddresses[maxChallengerCount] = msg.sender;
         maxChallengerCount += 1;
 
         emit Deposited(msg.sender, msg.value, _initialChallengeTime);
@@ -130,19 +128,15 @@ contract GMonster is Ownable{
 
     function challenge() external {
         //Validations
-        require(block.timestamp >= season.seasonStartTimestamp, "GMonster: Season not started");
-        require(block.timestamp <= season.seasonEndTimestamp, "GMonster: Season ended");
+        require(block.timestamp >= season.seasonStartTimestamp, ERR_CHALLENGE_OUTOFSEASON);
+        require(block.timestamp <= season.seasonEndTimestamp, ERR_CHALLENGE_OUTOFSEASON);
         Challenge memory _challenge = challenges[msg.sender];
-        require(_challenge.deposit >= DEPOSIT, ERROR_CHALLENGE1);
-        require(
-            _challenge.suceededChallengeCount < CHALLENGE_COUNT,
-            ERROR_CHALLENGE2
-        );
+        require(_challenge.deposit >= DEPOSIT, ERR_CHALLENGE_NOT_DEPOSITED);
         //Today's challenge is already done
         require(
             block.timestamp >
                 _challenge.lastChallengeTime + CHALLENGE_TIME_SPAN,
-            ERROR_CHALLENGE3
+            ERR_CHALLENGE_DEPULICATED
         );
         (
             uint _lostChallengeCount,
@@ -150,9 +144,9 @@ contract GMonster is Ownable{
         ) = _getLostCountAndIsSpan(_challenge, block.timestamp);
         require(
             _lostChallengeCount <= LOSTABLE_CHALLENGE_COUNT,
-            ERROR_CHALLENGE4
+            ERR_CHALLENGE_FAILED
         );
-        require(_isChallengeSpan, ERROR_CHALLENGE5);
+        require(_isChallengeSpan, ERR_CHALLENGE_OUTOFSPAN);
 
         //Judge continuous or not
         uint8 _continuousSuceededCount = _challenge.continuousSuceededCount;
@@ -177,20 +171,13 @@ contract GMonster is Ownable{
 
     function withdraw() external {
         //Validations
-        //Check season end
-        require(block.timestamp > season.seasonEndTimestamp, ERROR_WITHDRAW5);
+        require(season.isSeasonFixed, ERR_WITHDRAW5);
         Challenge memory _challenge = challenges[msg.sender];
-        require(_challenge.deposit >= DEPOSIT, ERROR_WITHDRAW1);
+        require(_challenge.deposit >= DEPOSIT, ERR_WITHDRAW1);
         require(
             _challenge.suceededChallengeCount >=
                 CHALLENGE_COUNT - LOSTABLE_CHALLENGE_COUNT,
-            ERROR_WITHDRAW2
-        );
-        require(
-            block.timestamp >
-                _challenge.initialChallengeTime +
-                    ((CHALLENGE_COUNT - 1) * 1 days),
-            ERROR_WITHDRAW3
+            ERR_WITHDRAW2
         );
 
         challenges[msg.sender] = Challenge({
@@ -203,7 +190,7 @@ contract GMonster is Ownable{
 
         uint _withdrawAmount = season.fixedBalance / (maxChallengerCount - fixFailedCount);
         (bool success, ) = msg.sender.call{value: _withdrawAmount}("");
-        require(success, ERROR_WITHDRAW4);
+        require(success, ERR_WITHDRAW4);
 
         emit Withdrawn(msg.sender, _withdrawAmount);
     }
@@ -213,10 +200,10 @@ contract GMonster is Ownable{
         require(!season.isSeasonFixed, "GMonster: Season already fixed");        
         Challenge memory _robberChallenge = challenges[msg.sender];
         //Validations
-        require(_robberChallenge.deposit >= DEPOSIT, ERROR_ROB1);
+        require(_robberChallenge.deposit >= DEPOSIT, ERR_ROB1);
 
         Challenge memory _targetChallenge = challenges[_target];
-        require(_judgeFailOrNot(_targetChallenge, block.timestamp), ERROR_ROB2);
+        require(_judgeFailOrNot(_targetChallenge, block.timestamp), ERR_ROB2);
 
         challenges[_target] = Challenge({
             deposit: 0,
@@ -227,7 +214,7 @@ contract GMonster is Ownable{
         });
 
         (bool success, ) = msg.sender.call{value: FIX_FAIL_FEE}("");
-        require(success, ERROR_ROB3);
+        require(success, ERR_ROB3);
 
         fixFailedCount++;
         emit Fixed(msg.sender, _target);

@@ -13,7 +13,7 @@ contract GMonster3SenarioTest is BaseTest {
     /// @dev A function invoked before each test case is run.
     function setUp() public virtual {
         _setUp();
-        gmon = new GMonsterMock(NINE_JST);
+        gmon = new GMonsterMock(NINE_JST - 6 hours);
     }
 
     //No miss

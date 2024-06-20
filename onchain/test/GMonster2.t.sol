@@ -3,33 +3,40 @@ pragma solidity >=0.8.23 <0.9.0;
 
 import {BaseTest, console2} from "./BaseTest.sol";
 import {GMonsterMock} from "../contracts/GMonsterMock.sol";
-import {Challenge, GMonster} from "../contracts/GMonster.sol";
+import {Challenge, Season, GMonster} from "../contracts/GMonster.sol";
 
 contract GMonster2Test is BaseTest {
     GMonsterMock internal gmon;
-    uint internal NINE_JST = 1718323200; // 2024-06-14 9:00 AM in GMT+9
-    uint internal DEPOSIT = 0.069 ether;
+    uint internal constant NINE_JST = 1718323200; // 2024-06-14 9:00 AM in GMT+9
+    uint internal constant DEPOSIT = 0.002 ether;
+    uint internal constant SEASON_START_TIME = NINE_JST - 6 hours;
+    uint internal seasonEndTime = SEASON_START_TIME + (21 * 1 days);
 
     /// @dev A function invoked before each test case is run.
     function setUp() public virtual {
         _setUp();
-        gmon = new GMonsterMock(NINE_JST);
+        gmon = new GMonsterMock(SEASON_START_TIME);
     }
 
     function test_deposit_Fail1() external {
-        vm.expectRevert(bytes(gmon.ERROR_DEPOSIT1()));
-        gmon.deposit{value: 0.1 ether}(NINE_JST);
+        vm.warp(NINE_JST + 1);
+        vm.expectRevert(bytes(gmon.ERR_DEPOSIT_SEASON()));
+        gmon.deposit{value: DEPOSIT}(NINE_JST);
     }
 
     function test_deposit_Fail2() external {
         gmon.deposit{value: DEPOSIT}(NINE_JST);
-        vm.expectRevert(bytes(gmon.ERROR_DEPOSIT2()));
+        vm.expectRevert(bytes(gmon.ERR_DEPOSIT_DUPLICATE()));
         gmon.deposit{value: DEPOSIT}(NINE_JST);
     }
 
     function test_deposit_Fail3() external {
-        vm.warp(NINE_JST);
-        vm.expectRevert(bytes(gmon.ERROR_DEPOSIT3()));
+        vm.expectRevert(bytes(gmon.ERR_DEPOSIT_AMOUNT()));
+        gmon.deposit{value: 0.1 ether}(NINE_JST);
+    }
+
+    function test_deposit_Fail4() external {
+        vm.expectRevert(bytes(gmon.ERR_DEPOSIT_INITIALTIME()));
         gmon.deposit{value: DEPOSIT}(10);
     }
 
@@ -47,20 +54,22 @@ contract GMonster2Test is BaseTest {
         assertEq(_lastChallengeTime, 0);
         assertEq(_suceededChallengeCount, 0);
         assertEq(_continuousSuceededCount, 0);
+        assertEq(address(gmon).balance, DEPOSIT);
+        assertEq(gmon.maxChallengerCount(), 1);
+        assertEq(gmon.challengerAddresses(0), address(this));
     }
 
     function test_challenge_Fail1() external {
-        vm.expectRevert(bytes(gmon.ERROR_CHALLENGE1()));
+        vm.warp(NINE_JST);
+        vm.expectRevert(bytes(gmon.ERR_CHALLENGE_NOT_DEPOSITED()));
         gmon.challenge();
     }
 
     function test_challenge_Fail2() external {
-        gmon.deposit{value: DEPOSIT}(NINE_JST);
-        for (uint8 i = 0; i < 21; i++) {
-            vm.warp(NINE_JST - 1 hours + (i * 1 days));
-            gmon.challenge();
-        }
-        vm.expectRevert(bytes(gmon.ERROR_CHALLENGE2()));
+        vm.expectRevert(bytes(gmon.ERR_CHALLENGE_OUTOFSEASON()));
+        gmon.challenge();
+        vm.warp(NINE_JST + (100 * 1 days));
+        vm.expectRevert(bytes(gmon.ERR_CHALLENGE_OUTOFSEASON()));
         gmon.challenge();
     }
 
@@ -68,14 +77,14 @@ contract GMonster2Test is BaseTest {
         gmon.deposit{value: DEPOSIT}(NINE_JST);
         vm.warp(NINE_JST);
         gmon.challenge();
-        vm.expectRevert(bytes(gmon.ERROR_CHALLENGE3()));
+        vm.expectRevert(bytes(gmon.ERR_CHALLENGE_DEPULICATED()));
         gmon.challenge();
     }
 
     function test_challenge_Fail4() external {
         gmon.deposit{value: DEPOSIT}(NINE_JST);
         vm.warp(NINE_JST + 4 days);
-        vm.expectRevert(bytes(gmon.ERROR_CHALLENGE4()));
+        vm.expectRevert(bytes(gmon.ERR_CHALLENGE_FAILED()));
         gmon.challenge();
     }
 
@@ -84,7 +93,7 @@ contract GMonster2Test is BaseTest {
         vm.warp(NINE_JST);
         gmon.challenge();
         vm.warp(NINE_JST + 20 hours);
-        vm.expectRevert(bytes(gmon.ERROR_CHALLENGE5()));
+        vm.expectRevert(bytes(gmon.ERR_CHALLENGE_OUTOFSPAN()));
         gmon.challenge();
     }
 
@@ -145,24 +154,44 @@ contract GMonster2Test is BaseTest {
         assertEq(_continuousSuceededCount, 4);
     }
 
+    function test_fixSeason_Fail1() external {
+        vm.expectRevert(bytes(gmon.ERR_FIX1()));
+        gmon.fixSeason();
+    }
+
+    function test_fixSeason_Fail2() external {
+        vm.warp(seasonEndTime + 1);
+        gmon.fixSeason();
+        vm.expectRevert(bytes(gmon.ERR_FIX2()));
+        gmon.fixSeason();
+    }
+
+    function test_fixSeason_Success1() external {
+        gmon.deposit{value: DEPOSIT}(NINE_JST);
+        vm.warp(seasonEndTime + 1);
+        gmon.fixSeason();
+        (, , bool _isSeasonFixed, uint _fixedBalance) = gmon.season();
+        assertEq(_isSeasonFixed, true);
+        assertEq(_fixedBalance, DEPOSIT);
+    }
+
+    function test_withdraw_Fail0() external {
+        vm.expectRevert(bytes(gmon.ERR_WITHDRAW5()));
+        gmon.withdraw();
+    }
+
     function test_withdraw_Fail1() external {
-        vm.expectRevert(bytes(gmon.ERROR_WITHDRAW1()));
+        vm.warp(seasonEndTime + 1);
+        gmon.fixSeason();
+        vm.expectRevert(bytes(gmon.ERR_WITHDRAW1()));
         gmon.withdraw();
     }
 
     function test_withdraw_Fail2() external {
         gmon.deposit{value: DEPOSIT}(NINE_JST);
-        vm.expectRevert(bytes(gmon.ERROR_WITHDRAW2()));
-        gmon.withdraw();
-    }
-
-    function test_withdraw_Fail3() external {
-        gmon.deposit{value: DEPOSIT}(NINE_JST);
-        for (uint8 i = 0; i < 19; i++) {
-            vm.warp(NINE_JST - 1 hours + (i * 1 days));
-            gmon.challenge();
-        }
-        vm.expectRevert(bytes(gmon.ERROR_WITHDRAW3()));
+        vm.warp(seasonEndTime + 1);
+        gmon.fixSeason();
+        vm.expectRevert(bytes(gmon.ERR_WITHDRAW2()));
         gmon.withdraw();
     }
 
@@ -173,7 +202,8 @@ contract GMonster2Test is BaseTest {
             vm.warp(NINE_JST - 1 hours + (i * 1 days));
             gmon.challenge();
         }
-        vm.warp(NINE_JST + (20 * 1 days) + 1);
+        vm.warp(seasonEndTime + 1);
+        gmon.fixSeason();
         gmon.withdraw();
         assertEq(address(gmon).balance, 0);
 
