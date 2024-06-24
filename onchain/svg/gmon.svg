@@ -1,0 +1,135 @@
+<svg xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMinYMin meet" viewBox="0 0 320 320" style="background-color:white">
+<defs>
+<style type="text/css">
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700');
+.body-fill {fill: #ddd;}
+.ear-fill {fill: #f6f;}
+.beard-fill {fill: #666;}
+</style>
+<linearGradient id="grad1" x1="0%" y1="20%" x2="0%" y2="100%">
+<stop offset="0%" style="stop-color:#6AE;stop-opacity:1" />
+<stop offset="100%" style="stop-color:#F2A43E;stop-opacity:1" />
+</linearGradient>
+</defs>
+<!-- Background -->
+<rect x="0" y="0" width="100%" height="100%" fill="url(#grad1)" />
+<!-- Message -->
+<rect x="20" y="32" width="280" height="40" rx="8" ry="8" fill="#222"/>
+<text x="160" y="59" font-size="18" fill="#fff" text-anchor="middle" style="font-family: 'Roboto';font-weight: 700;">GM you're awesome!!</text>
+<!-- frame -->
+<rect x="110" y="100" width="10" height="10" fill="#000"/>
+<rect x="120" y="100" width="10" height="10" fill="#000"/>
+<rect x="220" y="100" width="10" height="10" fill="#000"/>
+<rect x="100" y="110" width="10" height="10" fill="#000"/>
+<rect x="120" y="110" width="10" height="10" fill="#000"/>
+<rect x="200" y="110" width="20" height="10" fill="#000"/>
+<rect x="230" y="110" width="10" height="10" fill="#000"/>
+<rect x="100" y="120" width="10" height="10" fill="#000"/>
+<rect x="120" y="120" width="10" height="10" fill="#000"/>
+<rect x="190" y="120" width="20" height="10" fill="#000"/>
+<rect x="240" y="120" width="10" height="10" fill="#000"/>
+<rect x="90" y="130" width="10" height="10" fill="#000"/>
+<rect x="120" y="130" width="10" height="10" fill="#000"/>
+<rect x="170" y="130" width="30" height="10" fill="#000"/>
+<rect x="240" y="130" width="10" height="10" fill="#000"/>
+<rect x="80" y="140" width="10" height="10" fill="#000"/>
+<rect x="90" y="140" width="10" height="10" fill="#000"/>
+<rect x="120" y="140" width="10" height="10" fill="#000"/>
+<rect x="150" y="140" width="20" height="10" fill="#000"/>
+<rect x="230" y="140" width="10" height="10" fill="#000"/>
+<rect x="190" y="140" width="10" height="10" fill="#000"/>
+<rect x="70" y="150" width="10" height="10" fill="#000"/>
+<rect x="80" y="150" width="10" height="10" fill="#000"/>
+<rect x="130" y="150" width="20" height="10" fill="#000"/>
+<rect x="220" y="150" width="10" height="10" fill="#000"/>
+<rect x="180" y="150" width="10" height="10" fill="#000"/>
+<rect x="70" y="160" width="10" height="10" fill="#000"/>
+<rect x="210" y="160" width="10" height="10" fill="#000"/>
+<rect x="170" y="160" width="20" height="10" fill="#000"/>
+<rect x="60" y="170" width="10" height="10" fill="#000"/>
+<rect x="220" y="170" width="10" height="10" fill="#000"/>
+<rect x="190" y="170" width="10" height="10" fill="#000"/>
+<rect x="170" y="170" width="10" height="10" fill="#000"/>
+<rect x="60" y="180" width="10" height="10" fill="#000"/>
+<rect x="70" y="180" width="10" height="10" fill="#000"/>
+<rect x="220" y="180" width="10" height="10" fill="#000"/>
+<rect x="190" y="180" width="20" height="10" fill="#000"/>
+<rect x="170" y="180" width="10" height="10" fill="#000"/>
+<rect x="60" y="190" width="10" height="10" fill="#000"/>
+<rect x="110" y="190" width="10" height="10" fill="#fff"/>
+<rect x="120" y="190" width="10" height="10" fill="#000"/>
+<rect x="210" y="190" width="10" height="10" fill="#000"/>
+<rect x="180" y="190" width="20" height="10" fill="#000"/>
+<rect x="70" y="200" width="10" height="10" fill="#000"/>
+<rect x="110" y="200" width="20" height="10" fill="#000"/>
+<rect x="180" y="200" width="30" height="10" fill="#000"/>
+<rect x="80" y="210" width="10" height="10" fill="#000"/>
+<rect x="190" y="210" width="10" height="10" fill="#000"/>
+<rect x="70" y="220" width="10" height="10" fill="#000"/>
+<rect x="190" y="220" width="10" height="10" fill="#000"/>
+<rect x="80" y="230" width="10" height="10" fill="#000"/>
+<rect x="90" y="230" width="10" height="10" fill="#000"/>
+<rect x="190" y="230" width="10" height="10" fill="#000"/>
+<rect x="150" y="230" width="10" height="10" fill="#000"/>
+<rect x="90" y="240" width="10" height="10" fill="#000"/>
+<rect x="190" y="240" width="10" height="10" fill="#000"/>
+<rect x="140" y="240" width="10" height="10" fill="#000"/>
+<rect x="80" y="250" width="10" height="10" fill="#000"/>
+<rect x="100" y="250" width="10" height="10" fill="#000"/>
+<rect x="190" y="250" width="10" height="10" fill="#000"/>
+<rect x="150" y="250" width="10" height="10" fill="#000"/>
+<rect x="80" y="260" width="50" height="10" fill="#000"/>
+<rect x="180" y="260" width="10" height="10" fill="#000"/>
+<rect x="130" y="270" width="30" height="10" fill="#000"/>
+<rect x="170" y="270" width="20" height="10" fill="#000"/>
+<rect x="140" y="280" width="10" height="10" fill="#000"/>
+<rect x="180" y="280" width="10" height="10" fill="#000"/>
+<rect x="150" y="290" width="30" height="10" fill="#000"/>
+<!-- ear color -->
+<rect x="110" y="110" width="10" height="10" class="ear-fill" />
+<rect x="170" y="140" width="20" height="10" class="ear-fill" />
+<rect x="170" y="150" width="10" height="10" class="ear-fill" />
+<rect x="210" y="170" width="10" height="10" class="ear-fill" />
+<rect x="210" y="180" width="10" height="10" class="ear-fill" />
+<rect x="200" y="190" width="10" height="10" class="ear-fill" />
+<rect x="170" y="210" width="20" height="10" class="ear-fill" />
+<rect x="180" y="230" width="10" height="10" class="ear-fill" />
+<!-- beard color -->
+<rect x="130" y="200" width="20" height="10" class="beard-fill" />
+<rect x="130" y="210" width="10" height="10" class="beard-fill" />
+<!-- body -->
+<rect x="220" y="110" width="10" height="10" class="body-fill" />
+<rect x="110" y="120" width="10" height="10" class="body-fill" />
+<rect x="210" y="120" width="30" height="10" class="body-fill" />
+<rect x="100" y="130" width="20" height="10" class="body-fill" />
+<rect x="200" y="130" width="40" height="10" class="body-fill" />
+<rect x="100" y="140" width="20" height="10" class="body-fill" />
+<rect x="200" y="140" width="30" height="10" class="body-fill" />
+<rect x="90" y="150" width="40" height="10" class="body-fill" />
+<rect x="150" y="150" width="20" height="10" class="body-fill" />
+<rect x="190" y="150" width="30" height="10" class="body-fill" />
+<rect x="80" y="160" width="90" height="10" class="body-fill" />
+<rect x="190" y="160" width="20" height="10" class="body-fill" />
+<rect x="70" y="170" width="100" height="10" class="body-fill" />
+<rect x="180" y="170" width="10" height="10" class="body-fill" />
+<rect x="200" y="170" width="10" height="10" class="body-fill" />
+<rect x="80" y="180" width="90" height="10" class="body-fill" />
+<rect x="180" y="180" width="10" height="10" class="body-fill" />
+<rect x="70" y="190" width="40" height="10" class="body-fill" />
+<rect x="130" y="190" width="50" height="10" class="body-fill" />
+<rect x="80" y="200" width="30" height="10" class="body-fill" />
+<rect x="150" y="200" width="30" height="10" class="body-fill" />
+<rect x="90" y="210" width="40" height="10" class="body-fill" />
+<rect x="140" y="210" width="30" height="10" class="body-fill" />
+<rect x="80" y="220" width="110" height="10" class="body-fill" />
+<rect x="100" y="230" width="50" height="10" class="body-fill" />
+<rect x="160" y="230" width="20" height="10" class="body-fill" />
+<rect x="100" y="240" width="40" height="10" class="body-fill" />
+<rect x="150" y="240" width="40" height="10" class="body-fill" />
+<rect x="90" y="250" width="10" height="10" class="body-fill" />
+<rect x="110" y="250" width="40" height="10" class="body-fill" />
+<rect x="160" y="250" width="30" height="10" class="body-fill" />
+<rect x="130" y="260" width="50" height="10" class="body-fill" />
+<rect x="160" y="270" width="10" height="10" class="body-fill" />
+<rect x="150" y="280" width="30" height="10" class="body-fill" />
+</svg>
