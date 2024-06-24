@@ -3,6 +3,7 @@ pragma solidity ^0.8.24;
 
 import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 import {console2} from "forge-std/console2.sol";
+import {GMonsterNFT} from "./GMonsterNFT.sol";
 
 /*//////////////////////////////////////////////////////////////
                             STRUCTS
@@ -36,7 +37,7 @@ event Challenged(address indexed challenger, uint challengeTime);
 event Fixed(address indexed robber, address indexed target);
 event Withdrawn(address indexed challenger, uint withdrawAmount);
 
-contract GMonster is Ownable{
+contract GMonster is GMonsterNFT, Ownable{
     /*//////////////////////////////////////////////////////////////
                             ERRORS
     //////////////////////////////////////////////////////////////*/
@@ -84,7 +85,7 @@ contract GMonster is Ownable{
     /*//////////////////////////////////////////////////////////////
                               CONSTRUCTOR
     //////////////////////////////////////////////////////////////*/
-    constructor(uint _seasonStartTimestamp) Ownable(msg.sender) {
+    constructor(uint _seasonStartTimestamp) Ownable(msg.sender) GMonsterNFT(_seasonStartTimestamp) {
         setSeason(_seasonStartTimestamp);
     }
     /*//////////////////////////////////////////////////////////////
@@ -169,6 +170,8 @@ contract GMonster is Ownable{
             continuousSuceededCount: _continuousSuceededCount
         });
         emit Challenged(msg.sender, block.timestamp);
+
+        _mint(msg.sender);
     }
 
     function withdraw() external {
