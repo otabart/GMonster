@@ -1,3 +1,4 @@
+import React, { useRef } from 'react';
 import type { NextPage } from "next";
 import dynamic from 'next/dynamic';
 import { useState } from 'react';
@@ -17,6 +18,13 @@ const VideoPlayer = dynamic(() => import('../components/VideoPlayer'), {
 
 const Home: NextPage = () => {
   const [isVideoLoaded, setIsVideoLoaded] = useState(false);
+  const joinChallengeRef = useRef<HTMLDivElement>(null);
+
+  const scrollToJoinChallenge = () => {
+    if (joinChallengeRef.current) {
+      joinChallengeRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -95,7 +103,10 @@ const Home: NextPage = () => {
               </p>
             </div>
             <div className="mt-6 flex justify-center md:mt-0 md:ml-8">
-              <Button className="bg-blue-500 hover:bg-blue-600 text-white text-lg py-3 px-6 rounded-full transition duration-300 ease-in-out transform hover:scale-105">
+              <Button
+                className="bg-blue-500 hover:bg-blue-600 text-white text-lg py-3 px-6 rounded-full transition duration-300 ease-in-out transform hover:scale-105"
+                onClick={scrollToJoinChallenge}
+              >
                 Join Challenge
               </Button>
             </div>
@@ -104,7 +115,9 @@ const Home: NextPage = () => {
       </div>
 
       <HowItWorks />
-      <JoinChallenge />
+      <div ref={joinChallengeRef}>
+        <JoinChallenge />
+      </div>
       <Footer />
 
       <Toaster />
