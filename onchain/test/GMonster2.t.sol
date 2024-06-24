@@ -160,7 +160,7 @@ contract GMonster2Test is BaseTest {
     }
 
     function test_fixSeason_Fail2() external {
-        vm.warp(seasonEndTime + 1);
+        vm.warp(seasonEndTime + 1 days + 1);
         gmon.fixSeason();
         vm.expectRevert(bytes(gmon.ERR_FIX2()));
         gmon.fixSeason();
@@ -168,20 +168,15 @@ contract GMonster2Test is BaseTest {
 
     function test_fixSeason_Success1() external {
         gmon.deposit{value: DEPOSIT}(NINE_JST);
-        vm.warp(seasonEndTime + 1);
+        vm.warp(seasonEndTime + 1 days + 1);
         gmon.fixSeason();
-        (, , bool _isSeasonFixed, uint _fixedBalance) = gmon.season();
+        (, , , bool _isSeasonFixed, uint _fixedBalance) = gmon.season();
         assertEq(_isSeasonFixed, true);
         assertEq(_fixedBalance, DEPOSIT);
     }
 
-    function test_withdraw_Fail0() external {
-        vm.expectRevert(bytes(gmon.ERR_WITHDRAW5()));
-        gmon.withdraw();
-    }
-
     function test_withdraw_Fail1() external {
-        vm.warp(seasonEndTime + 1);
+        vm.warp(seasonEndTime + 1 days + 1);
         gmon.fixSeason();
         vm.expectRevert(bytes(gmon.ERR_WITHDRAW1()));
         gmon.withdraw();
@@ -189,8 +184,7 @@ contract GMonster2Test is BaseTest {
 
     function test_withdraw_Fail2() external {
         gmon.deposit{value: DEPOSIT}(NINE_JST);
-        vm.warp(seasonEndTime + 1);
-        gmon.fixSeason();
+        vm.warp(seasonEndTime + 1 days + 1);
         vm.expectRevert(bytes(gmon.ERR_WITHDRAW2()));
         gmon.withdraw();
     }
@@ -202,8 +196,7 @@ contract GMonster2Test is BaseTest {
             vm.warp(NINE_JST - 1 hours + (i * 1 days));
             gmon.challenge();
         }
-        vm.warp(seasonEndTime + 1);
-        gmon.fixSeason();
+        vm.warp(seasonEndTime + 1 days + 1);
         gmon.withdraw();
         assertEq(address(gmon).balance, 0);
 
@@ -227,7 +220,7 @@ contract GMonster2Test is BaseTest {
     }
 
     function test_fixFail_Fail2() external {
-        vm.warp(seasonEndTime + 1);
+        vm.warp(seasonEndTime + 1 days + 1);
         gmon.fixSeason();
         vm.expectRevert(bytes(gmon.ERR_FIXFAIL_FIXED()));
         gmon.fixFail(address(this));

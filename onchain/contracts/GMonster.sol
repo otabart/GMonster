@@ -16,10 +16,11 @@ struct Challenge {
     uint8 continuousSuceededCount;
 }
 struct Season{
-    uint  seasonStartTimestamp;
-    uint  seasonEndTimestamp;
-    bool  isSeasonFixed;
-    uint  fixedBalance;
+    uint seasonStartTimestamp;
+    uint seasonEndTimestamp;
+    uint seasonFixedTimestamp;
+    bool isSeasonFixed;
+    uint fixedBalance;
 }
 
 /*//////////////////////////////////////////////////////////////
@@ -54,7 +55,6 @@ contract GMonster is Ownable{
     string public constant ERR_WITHDRAW2 =
         "GMonster: Challenge count not enough";
     string public constant ERR_WITHDRAW4 = "GMonster: Transfer failed";
-    string public constant ERR_WITHDRAW5 = "GMonster: Season not fixed";
     string public constant ERR_FIXFAIL1 = "GMonster: Not participated";
     string public constant ERR_FIXFAIL2 = "GMonster: Not robable";
     string public constant ERR_FIXFAIL3 = "GMonster: Transfer failed";
@@ -68,7 +68,7 @@ contract GMonster is Ownable{
     //////////////////////////////////////////////////////////////*/
     uint public constant DEPOSIT = 0.002 ether;
     uint public constant FIX_FAIL_FEE = 0.0002 ether; //10%
-    uint public constant CHALLENGE_COUNT = 21;
+    uint8 public constant CHALLENGE_COUNT = 21;
     uint public constant LOSTABLE_CHALLENGE_COUNT = 3;
     uint public constant CHALLENGE_TIME_SPAN = 3 hours;
 
@@ -93,10 +93,11 @@ contract GMonster is Ownable{
     function setSeason(uint _seasonStartTimestamp) public onlyOwner{
         season.seasonStartTimestamp = _seasonStartTimestamp;
         season.seasonEndTimestamp = _seasonStartTimestamp + (CHALLENGE_COUNT * 1 days);
+        season.seasonFixedTimestamp = _seasonStartTimestamp + (CHALLENGE_COUNT * 1 days) + 1 days;
     }
 
-    function fixSeason() public onlyOwner {
-        require(block.timestamp > season.seasonEndTimestamp, ERR_FIX1);
+    function fixSeason() public {
+        require(block.timestamp > season.seasonFixedTimestamp, ERR_FIX1);
         require(!season.isSeasonFixed, ERR_FIX2);
         season.isSeasonFixed = true;
         season.fixedBalance = address(this).balance;
@@ -171,8 +172,9 @@ contract GMonster is Ownable{
     }
 
     function withdraw() external {
+        //If not fixed, fix
+        if (!season.isSeasonFixed) fixSeason();
         //Validations
-        require(season.isSeasonFixed, ERR_WITHDRAW5);
         Challenge memory _challenge = challenges[msg.sender];
         require(_challenge.deposit >= DEPOSIT, ERR_WITHDRAW1);
         require(
@@ -262,9 +264,12 @@ contract GMonster is Ownable{
         virtual
         returns (uint8 lostChallengeCount_, bool isChallengeSpan_)
     {
+        if(_timestamp > season.seasonEndTimestamp) return (CHALLENGE_COUNT - _challenge.suceededChallengeCount, false);
+
         uint8 _counter;
-        for (uint8 i = _challenge.suceededChallengeCount; i < 21; i++) {
-            uint _pastDays = i * 1 days;
+        uint _pastDays;
+        uint8 i;
+        while(_pastDays < _timestamp){
             if (
                 _timestamp <
                 _challenge.initialChallengeTime +
@@ -291,6 +296,8 @@ contract GMonster is Ownable{
 
                 break;
             }
+            i++;
+            _pastDays = i * 1 days;
         }
 
         //SuceededChallengeCount is updated
