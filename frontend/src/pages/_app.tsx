@@ -116,10 +116,8 @@ function MyApp({ Component, pageProps }: AppProps) {
                 content='https://gmonster.verce.com/ogp.png'
               />
             </Head>
-            <div className="bg-default text-default h-auto">
-              <div className="mx-16">
-                <Component {...pageProps} />
-              </div>
+            <div className="bg-white-900 text-default h-auto">
+              <Component {...pageProps} />
             </div>
         </ConnectKitProvider>
       </QueryClientProvider>

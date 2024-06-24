@@ -14,12 +14,6 @@ module.exports = {
       padding: '0rem',
     },
     extend: {
-      backgroundColor: {
-        default: '#1F2937', // bg-gray-900
-      },
-      textColor: {
-        default: '#FFFFFF', // white
-      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
@@ -73,9 +67,6 @@ module.exports = {
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
-      },
-      backgroundImage: {
-        'gradient-to-b': 'linear-gradient(to bottom, #ffffff, #CADBFD)',
       }
     },
   },
