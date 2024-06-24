@@ -15,17 +15,25 @@ struct TokenURIParams {
 
 abstract contract GMonsterNFT is ERC721 {
     /*//////////////////////////////////////////////////////////////
+                                CONSTANTS
+    //////////////////////////////////////////////////////////////*/
+    string constant NAME = "GMonsterNFT";
+    string constant DESCRIPTION = "This NFT is minted for GMonster.";
+    uint8 constant KIND_COUNT = 21;
+    /*//////////////////////////////////////////////////////////////
                                 STORAGE
     //////////////////////////////////////////////////////////////*/
     uint public currentTokenId;
-
-    string constant NAME = "GMonsterNFT";
-    string constant DESCRIPTION = "This NFT is minted for GMonster.";
+    uint public seasonStartTimestamp;
+    //Token ID => kind
+    mapping(uint => uint8) public nftKinds;
 
     /*//////////////////////////////////////////////////////////////
                               CONSTRUCTOR
     //////////////////////////////////////////////////////////////*/
-    constructor() ERC721(NAME, NAME) {}
+    constructor(uint _seasonStartTimestamp) ERC721(NAME, NAME) {
+        seasonStartTimestamp = _seasonStartTimestamp;
+    }
 
     /*//////////////////////////////////////////////////////////////
                             EXTERNAL UPDATE
@@ -36,7 +44,7 @@ abstract contract GMonsterNFT is ERC721 {
     //////////////////////////////////////////////////////////////*/
 
     // prettier-ignore
-    function generateImage(uint256 _tokenId, string memory _message, string[3] memory _colors)
+    function generateImage(string memory _message, string[3] memory _colors)
     public
     pure
     returns (string memory)
@@ -75,13 +83,29 @@ abstract contract GMonsterNFT is ERC721 {
             );
     }
 
+    function _getMessageAndColors(
+        uint8 kind
+    ) internal pure returns (string memory, string[3] memory) {
+        if (kind == 0) {
+            return ("HOGE!!", ["ff0000", "00ff00", "0000ff"]);
+        } else if (kind == 1) {
+            return ("FUGA!!", ["00ff00", "0000ff", "ff0000"]);
+        } else {
+            return ("PIYO!!", ["0000ff", "ff0000", "00ff00"]);
+        }
+    }
+
     function tokenURI(
         uint256 _id
-    ) public pure override returns (string memory) {
+    ) public view override returns (string memory) {
+        (
+            string memory _message,
+            string[3] memory _colors
+        ) = _getMessageAndColors(nftKinds[_id]);
         TokenURIParams memory params = TokenURIParams({
             name: string(abi.encodePacked(NAME, " #", Strings.toString(_id))),
             description: DESCRIPTION,
-            image: generateImage(_id, "HOGE!!", ["ff0000", "00ff00", "0000ff"])
+            image: generateImage(_message, _colors)
         });
         return constructTokenURI(params);
     }
@@ -118,6 +142,14 @@ abstract contract GMonsterNFT is ERC721 {
     //////////////////////////////////////////////////////////////*/
     function _mint(address _to) internal virtual {
         currentTokenId++;
+        uint8 _kind;
+        for (uint8 i = 0; i < KIND_COUNT; i++) {
+            if (block.timestamp < seasonStartTimestamp + ((i + 1) * 1 days)) {
+                _kind = i;
+                break;
+            }
+        }
+        nftKinds[currentTokenId] = _kind;
         _mint(_to, currentTokenId);
     }
 }
