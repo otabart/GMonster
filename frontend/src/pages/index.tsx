@@ -6,49 +6,13 @@ import { Button } from "@/components/ui/button";
 
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as ToasterSonner } from "@/components/ui/sonner";
+import HowItWorks from '../components/HowItWorks';
+import JoinChallenge from '../components/JoinChallenge';
 
 const VideoPlayer = dynamic(() => import('../components/VideoPlayer'), {
   loading: () => <div className="w-full h-full bg-gray-200 animate-pulse" />,
   ssr: false
 });
-
-
-const HowItWorksItem = ({ number, title, description }: { number: string, title: string, description: string }) => (
-  <div className="bg-white p-6 pt-10 rounded-lg shadow-md relative">
-    <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-      <div className="w-16 h-16 bg-blue-200 rounded-full flex items-center justify-center text-white font-bold text-2xl border-4 border-white">
-        {number}
-      </div>
-    </div>
-    <h3 className="text-xl font-semibold mb-2 mt-4">{title}</h3>
-    <p className="text-gray-600">{description}</p>
-  </div>
-);
-
-const HowItWorks = () => (
-  <section className="py-12 bg-gray-100">
-    <div className="container mx-auto px-4">
-      <h2 className="text-3xl font-bold text-center mb-16">How it works</h2>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-        <HowItWorksItem
-          number="1"
-          title="Deposit & Set timezone"
-          description="Deposit 0.002 ETH(Base) and set a time to wake up. 3 hours every day you setup"
-        />
-        <HowItWorksItem
-          number="2"
-          title="GM action"
-          description="Starting from 4st July, GM action from Farcaster's #gmonster channel."
-        />
-        <HowItWorksItem
-          number="3"
-          title="Continue for 21 days"
-          description="Continues for 21 days! If you miss more than 3 days, the deposit will be distributed to other achievers."
-        />
-      </div>
-    </div>
-  </section>
-);
 
 const Home: NextPage = () => {
   const [isVideoLoaded, setIsVideoLoaded] = useState(false);
@@ -139,6 +103,7 @@ const Home: NextPage = () => {
       </div>
 
       <HowItWorks />
+      <JoinChallenge />
 
       <Toaster />
       <ToasterSonner position="bottom-right" />
