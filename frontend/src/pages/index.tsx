@@ -8,6 +8,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as ToasterSonner } from "@/components/ui/sonner";
 import HowItWorks from '../components/HowItWorks';
 import JoinChallenge from '../components/JoinChallenge';
+import Footer from '../components/Footer';
 
 const VideoPlayer = dynamic(() => import('../components/VideoPlayer'), {
   loading: () => <div className="w-full h-full bg-gray-200 animate-pulse" />,
@@ -104,6 +105,7 @@ const Home: NextPage = () => {
 
       <HowItWorks />
       <JoinChallenge />
+      <Footer />
 
       <Toaster />
       <ToasterSonner position="bottom-right" />
