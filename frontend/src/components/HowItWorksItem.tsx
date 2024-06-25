@@ -1,9 +1,9 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
 
 interface HowItWorksItemProps {
   number: string;
   title: string;
-  description: string;
+  description: string | ReactNode;
 }
 
 const HowItWorksItem: React.FC<HowItWorksItemProps> = ({ number, title, description }) => (
@@ -14,7 +14,7 @@ const HowItWorksItem: React.FC<HowItWorksItemProps> = ({ number, title, descript
       </div>
     </div>
     <h3 className="text-xl font-semibold mb-2 mt-4">{title}</h3>
-    <p className="text-gray-600">{description}</p>
+    <div className="text-gray-600">{description}</div>
   </div>
 );
 
