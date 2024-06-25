@@ -2,36 +2,26 @@ import { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ConnectWallet }  from '../components/Button/ConnectWallet';
-import { useAccount, useWriteContract, useReadContract } from "wagmi";
-import { parseEther } from 'viem';
+import { useAccount, useWriteContract } from "wagmi";
 import LoadingIndicator from "./LoadingIndicator";
 import { GmonsterAbi } from '../constants/GmonsterAbi';
 import { GmonsterAddress } from '../constants/GmonsterAddress';
 import { toast } from "sonner";
-
-const DEPOSIT_AMOUNT = parseEther('0.002'); // 0.002 ETH in wei
+import { parseEther } from 'viem';
 
 const JoinChallenge = () => {
   const [startTime, setStartTime] = useState('07:00');
   const [endTime, setEndTime] = useState('10:00');
   const [timezone, setTimezone] = useState('');
-  const [seasonStartTimestamp, setSeasonStartTimestamp] = useState<bigint>(BigInt(0));
-  const { isConnected, address } = useAccount();
+  const { isConnected } = useAccount();
   const { isPending, writeContract } = useWriteContract();
-  const { data: seasonData } = useReadContract({
-    address: GmonsterAddress as `0x${string}`,
-    abi: GmonsterAbi,
-    functionName: "season",
-  });
+  const DEPOSIT_AMOUNT = parseEther('0.002');
+  
 
   useEffect(() => {
     const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
     setTimezone(tz);
-
-    if (seasonData && 'seasonStartTimestamp' in seasonData) {
-      setSeasonStartTimestamp(BigInt(seasonData.seasonStartTimestamp));
-    }
-  }, [seasonData]);
+  }, []);
 
   const handleStartTimeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newStartTime = e.target.value;
@@ -57,19 +47,6 @@ const JoinChallenge = () => {
 
   const deposit = async () => {
     const endTimeUnix = getEndTimeUnixTimestamp();
-    
-    // Check if the current time is before the season start
-    if (BigInt(Math.floor(Date.now() / 1000)) >= seasonStartTimestamp) {
-      toast.error("The season has already started. Deposits are no longer accepted.");
-      return;
-    }
-
-    // Check if the endTimeUnix is after or equal to the season start time
-    if (endTimeUnix < seasonStartTimestamp) {
-      toast.error("Your challenge end time must be after the season start time.");
-      return;
-    }
-
     writeContract(
       {
         address: GmonsterAddress as `0x${string}`,
@@ -79,24 +56,22 @@ const JoinChallenge = () => {
         value: DEPOSIT_AMOUNT,
       },
       {
-        onSuccess(data) {
-          toast.success("Deposit success!", {
+        onSuccess(data, variables, context) {
+          toast("Deposit success!", {
             action: {
               label: "Share on X",
               onClick: () => {
                 const shareText = encodeURIComponent(
-                  `I pledge to Base to get up early for 21 days. 🫡 \nhttps://gmonster.vercel.app/`
+                  `I pledge to Base to get up early for 21 days. 🫡 \nhttps://gmonster.vercel.app//`
                 );
                 const hashtags = encodeURIComponent("GMonster,Base Summer");
                 const related = encodeURIComponent("twitterapi,twitter");
                 const url = `https://x.com/intent/tweet?text=${shareText}&hashtags=${hashtags}&related=${related}`;
-                window.open(url, "_blank")?.focus();
+                const newWindow = window.open(url, "_blank");
+                newWindow?.focus();
               },
             },
           });
-        },
-        onError(error) {
-          toast.error(`Failed to deposit: ${error.message}`);
         },
       }
     );
@@ -126,16 +101,12 @@ const JoinChallenge = () => {
             </div>
           </div>
           <p className="text-sm text-gray-600 mb-6">
-            Make sure your wallet address is connected to your Farcaster account.
+            Make sure your wallet address connected to your Farcaster account.
           </p>
           
           {isConnected ? (
-            <Button 
-              onClick={deposit} 
-              className="w-full bg-blue-500 hover:bg-blue-600 text-white text-lg py-3 px-6 rounded-full transition duration-300 ease-in-out transform hover:scale-105"
-              disabled={isPending}
-            >
-              {isPending ? <LoadingIndicator /> : "Deposit 0.002 ETH"}
+            <Button onClick={deposit} className="w-full bg-blue-500 hover:bg-blue-600 text-white text-lg py-3 px-6 rounded-full transition duration-300 ease-in-out transform hover:scale-105">
+              {isPending ? <LoadingIndicator /> : "Deposit 0.002ETH"}
             </Button>
           ) : (
             <ConnectWallet />
