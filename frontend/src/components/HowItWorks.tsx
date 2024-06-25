@@ -14,11 +14,24 @@ const HowItWorks: React.FC = () => (
         <HowItWorksItem
           number="2"
           title="GM action"
-          description="Starting from 4st July, GM action from Farcaster's #gmonster channel."
+          description={
+            <>
+              GM action on pined farcaster framed post in {' '}
+              <a
+                href="https://warpcast.com/~/channel/gmonster"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-purple-600 hover:text-purple-800 underline"
+              >
+                Farcaster #gmonster channel
+              </a>
+              .
+            </>
+          }
         />
         <HowItWorksItem
           number="3"
-          title="Continue for 21 days"
+          title="Continue 21 days & Get prize🏆"
           description="Continues for 21 days! If you miss more than 3 days, the deposit will be distributed to other achievers."
         />
       </div>
