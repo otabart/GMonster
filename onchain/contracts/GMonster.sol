@@ -3,7 +3,10 @@ pragma solidity ^0.8.24;
 
 import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 import {console2} from "forge-std/console2.sol";
-import {GMonsterNFT} from "./GMonsterNFT.sol";
+
+interface IERC721Mintable {
+    function mint(address to, uint seasonStartTimestamp) external;
+}
 
 /*//////////////////////////////////////////////////////////////
                             STRUCTS
@@ -37,7 +40,7 @@ event Challenged(address indexed challenger, uint challengeTime);
 event Fixed(address indexed robber, address indexed target);
 event Withdrawn(address indexed challenger, uint withdrawAmount);
 
-contract GMonster is GMonsterNFT, Ownable{
+contract GMonster is Ownable{
     /*//////////////////////////////////////////////////////////////
                             ERRORS
     //////////////////////////////////////////////////////////////*/
@@ -81,11 +84,12 @@ contract GMonster is GMonsterNFT, Ownable{
     mapping(uint8 => address) public challengerAddresses;
     uint8 public maxChallengerCount;
     uint8 public fixFailedCount;
+    IERC721Mintable public nft;
 
     /*//////////////////////////////////////////////////////////////
                               CONSTRUCTOR
     //////////////////////////////////////////////////////////////*/
-    constructor(uint _seasonStartTimestamp) Ownable(msg.sender) GMonsterNFT(_seasonStartTimestamp) {
+    constructor(uint _seasonStartTimestamp) Ownable(msg.sender) {
         setSeason(_seasonStartTimestamp);
     }
     /*//////////////////////////////////////////////////////////////
@@ -102,6 +106,10 @@ contract GMonster is GMonsterNFT, Ownable{
         require(!season.isSeasonFixed, ERR_FIX2);
         season.isSeasonFixed = true;
         season.fixedBalance = address(this).balance;
+    }
+
+    function setNft(address _nft) public onlyOwner{
+        nft = IERC721Mintable(_nft);
     }
 
     /*//////////////////////////////////////////////////////////////
@@ -171,7 +179,9 @@ contract GMonster is GMonsterNFT, Ownable{
         });
         emit Challenged(msg.sender, block.timestamp);
 
-        _mint(msg.sender);
+        if(address(nft) != address(0)){
+            nft.mint(msg.sender, season.seasonStartTimestamp);
+        }
     }
 
     function withdraw() external {

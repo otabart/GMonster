@@ -13,7 +13,7 @@ struct TokenURIParams {
     string image;
 }
 
-abstract contract GMonsterNFT is ERC721 {
+contract GMonsterNFT is ERC721 {
     /*//////////////////////////////////////////////////////////////
                                 CONSTANTS
     //////////////////////////////////////////////////////////////*/
@@ -24,20 +24,24 @@ abstract contract GMonsterNFT is ERC721 {
                                 STORAGE
     //////////////////////////////////////////////////////////////*/
     uint public currentTokenId;
-    uint public seasonStartTimestamp;
+    address public minter;
     //Token ID => kind
     mapping(uint => uint8) public nftKinds;
 
     /*//////////////////////////////////////////////////////////////
                               CONSTRUCTOR
     //////////////////////////////////////////////////////////////*/
-    constructor(uint _seasonStartTimestamp) ERC721(NAME, NAME) {
-        seasonStartTimestamp = _seasonStartTimestamp;
+    constructor(address _minter) ERC721(NAME, NAME) {
+        minter = _minter;
     }
 
     /*//////////////////////////////////////////////////////////////
                             EXTERNAL UPDATE
     //////////////////////////////////////////////////////////////*/
+    function changeMinter(address _minter) external {
+        require(msg.sender == minter, "GMonsterNFT: FORBIDDEN");
+        minter = _minter;
+    }
 
     /*//////////////////////////////////////////////////////////////
                              EXTERNAL VIEW
@@ -177,11 +181,12 @@ abstract contract GMonsterNFT is ERC721 {
     /*//////////////////////////////////////////////////////////////
                             INTERNAL UPDATE
     //////////////////////////////////////////////////////////////*/
-    function _mint(address _to) internal virtual {
+    function mint(address _to, uint _seasonStartTimestamp) external {
+        require(msg.sender == minter, "GMonsterNFT: FORBIDDEN");
         currentTokenId++;
         uint8 _kind;
         for (uint8 i = 0; i < KIND_COUNT; i++) {
-            if (block.timestamp < seasonStartTimestamp + ((i + 1) * 1 days)) {
+            if (block.timestamp < _seasonStartTimestamp + ((i + 1) * 1 days)) {
                 _kind = i;
                 break;
             }

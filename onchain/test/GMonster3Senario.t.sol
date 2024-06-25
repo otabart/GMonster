@@ -96,6 +96,9 @@ contract GMonster3SenarioTest is BaseTest {
         (, , , , uint fixedBalance1) = gmon.season();
         assertEq(fixedBalance1, 0);
         gmon.fixFail(bob);
+        //Fix balance
+        vm.warp(NINE_JST + 22 * 1 days);
+        gmon.withdraw();
         (, , , , uint fixedBalance2) = gmon.season();
         assertEq(fixedBalance2, DEPOSIT * 3 - gmon.FIX_FAIL_FEE());
     }
