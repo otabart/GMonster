@@ -26,27 +26,30 @@ const JoinChallenge = () => {
   const handleStartTimeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newStartTime = e.target.value;
     setStartTime(newStartTime);
-    
-    const [hours, minutes] = newStartTime.split(':').map(Number);
-    const endDate = new Date(2000, 0, 1, hours + 3, minutes);
+    // Set endTime to 10:00 AM on July 4th, 2024 (GMT0)
+    const endDate = new Date(Date.UTC(2024, 6, 4, 10, 0)); // Note: Months are zero-indexed (6 is July)
     setEndTime(endDate.toTimeString().slice(0, 5));
   };
 
   const getEndTimeUnixTimestamp = (): bigint => {
-    const now = new Date();
     const [hours, minutes] = endTime.split(':').map(Number);
-    const endDate = new Date(now.getFullYear(), now.getMonth(), now.getDate(), hours, minutes);
+    const endDate = new Date(2024, 6, 4, hours, minutes); // July 4th, 2024
     
     // If the end time is earlier than the current time, set it for tomorrow
+    const now = new Date();
     if (endDate < now) {
       endDate.setDate(endDate.getDate() + 1);
     }
+
+    console.log("@@@endDate=", endDate)
     
     return BigInt(Math.floor(endDate.getTime() / 1000)); // Convert to seconds and then to BigInt
   };
+  
 
   const deposit = async () => {
     const endTimeUnix = getEndTimeUnixTimestamp();
+    console.log("@@@endTimeUnix=", endTimeUnix)
     writeContract(
       {
         address: GmonsterAddress as `0x${string}`,
