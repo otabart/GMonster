@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import HowItWorksItem from './HowItWorksItem';
-import VideoPlayer from './VideoPlayer';
 
 const HowItWorks: React.FC = () => {
   const [isVideoLoaded, setIsVideoLoaded] = useState(false);
@@ -24,14 +23,14 @@ const HowItWorks: React.FC = () => {
             title="GM action"
             description={
               <>
-                GM action on pined farcaster framed post in {' '}
+                GM action on pined farcaster framed post in{' '}
                 <a
                   href="https://warpcast.com/~/channel/gmonster"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-purple-600 hover:text-purple-800 underline"
                 >
-                  Farcaster  #gmonster channel
+                  Farcaster #gmonster channel
                 </a>
                 .
               </>
@@ -45,16 +44,14 @@ const HowItWorks: React.FC = () => {
         </div>
         <div className="w-full max-w-xl mx-auto">
           <div className="aspect-w-16 aspect-h-9 bg-gray-200 rounded-lg overflow-hidden">
-            {!isVideoLoaded && (
-              <div className="flex items-center justify-center h-full">
-                <p className="text-gray-500">Loading video...</p>
-              </div>
-            )}
-            <VideoPlayer
-              src="/second-movie.mp4"
-              onLoadedData={handleVideoLoaded}
-              className={`w-full h-full object-cover ${isVideoLoaded ? 'opacity-100' : 'opacity-0'}`}
-            />
+            <iframe
+              src="https://www.youtube.com/embed/h2WGs1tJDl4"
+              title="YouTube video player"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+              onLoad={handleVideoLoaded}
+              className={"h-80 w-full"}
+            ></iframe>
           </div>
         </div>
       </div>

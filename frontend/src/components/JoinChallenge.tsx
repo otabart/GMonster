@@ -92,7 +92,7 @@ const JoinChallenge = () => {
                 const shareText = encodeURIComponent(
                   `I pledge to Base to get up early for 21 days. 🫡 \nhttps://gmonster.vercel.app//`
                 );
-                const hashtags = encodeURIComponent("GMonster,Base Summer");
+                const hashtags = encodeURIComponent("GMonster,BaseSummer");
                 const related = encodeURIComponent("twitterapi,twitter");
                 const url = `https://x.com/intent/tweet?text=${shareText}&hashtags=${hashtags}&related=${related}`;
                 const newWindow = window.open(url, "_blank");
