@@ -12,7 +12,7 @@ export const app = new Frog({
 app.frame('/', (c) => {
   return c.res({
     action: '/finish',
-    image: 'https://gmon-frames.vercel.app/title.png',
+    image: '/title.png',
     intents: [
       <Button.Transaction target="/challenge">GM</Button.Transaction>,
     ]
@@ -22,7 +22,7 @@ app.frame('/', (c) => {
 app.frame('/finish', (c) => {
   const { transactionId } = c
   return c.res({
-    image: 'https://gmon-frames.vercel.app/gmon/01.png', // TODO: Changed everyday
+    image: '/gmon/01.png', // TODO: Changed everyday
   })
 })
 
