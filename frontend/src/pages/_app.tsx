@@ -58,7 +58,7 @@ function MyApp({ Component, pageProps }: AppProps) {
               <meta property='og:title' content='GMonster' />
               <meta
                 property='og:description'
-                content='GM GM GM GM GM GM GM GM GM GM GM GM '
+                content='GM GM GM GM GM GM GM GM GM GM GM GM'
               />
               <meta property='og:image' content='/ogp.png' />
               <link rel='icon' type='image/png' sizes='16x16' href='/favicon-16x16.png' />
