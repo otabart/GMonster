@@ -60,7 +60,7 @@ function MyApp({ Component, pageProps }: AppProps) {
                 property='og:description'
                 content='GM GM GM GM GM GM GM GM GM GM GM GM'
               />
-              <meta property='og:image' content='/ogp.png' />
+              <meta property='og:image' content='https://gmonster.vercel.app/ogp.png' />
               <link rel='icon' type='image/png' sizes='16x16' href='/favicon-16x16.png' />
               <link rel='icon' type='image/png' sizes='32x32' href='/favicon-32x32.png' />
               <link rel='apple-touch-icon' sizes='200x200' href='/apple-touch-icon.png' />
@@ -72,7 +72,7 @@ function MyApp({ Component, pageProps }: AppProps) {
               />
               <meta
                 name='twitter:image'
-                content='https://gmonster.verce.com/ogp.png'
+                content='https://gmonster.vercel.app/ogp.png'
               />
             </Head>
             <div className="bg-white-900 text-default h-auto">
