@@ -3,6 +3,7 @@
     "module": "NodeNext",
     "strict": true,
     "jsx": "react-jsx",
-    "jsxImportSource": "hono/jsx"
+    "jsxImportSource": "hono/jsx",
+    "moduleResolution": "node16"
   }
 }

@@ -1,65 +1,39 @@
 import { Button, Frog, TextInput } from 'frog'
 import { devtools } from 'frog/dev'
 import { serveStatic } from 'frog/serve-static'
-
+import { GmonsterAbi } from '../constants/GmonsterAbi.js'
 // import { neynar } from 'frog/hubs'
 
 export const app = new Frog({
-  // Supply a Hub to enable frame verification.
-  // hub: neynar({ apiKey: 'NEYNAR_FROG_FM' }),
+  imageAspectRatio: '1:1'
 })
 
+
 app.frame('/', (c) => {
-  const { buttonValue, inputText, status } = c
-  const fruit = inputText || buttonValue
   return c.res({
-    image: (
-      <div
-        style={{
-          alignItems: 'center',
-          background:
-            status === 'response'
-              ? 'linear-gradient(to right, #432889, #17101F)'
-              : 'black',
-          backgroundSize: '100% 100%',
-          display: 'flex',
-          flexDirection: 'column',
-          flexWrap: 'nowrap',
-          height: '100%',
-          justifyContent: 'center',
-          textAlign: 'center',
-          width: '100%',
-        }}
-      >
-        <div
-          style={{
-            color: 'white',
-            fontSize: 60,
-            fontStyle: 'normal',
-            letterSpacing: '-0.025em',
-            lineHeight: 1.4,
-            marginTop: 30,
-            padding: '0 120px',
-            whiteSpace: 'pre-wrap',
-          }}
-        >
-          {status === 'response'
-            ? `Nice choice.${fruit ? ` ${fruit.toUpperCase()}!!` : ''}`
-            : 'Welcome!'}
-        </div>
-      </div>
-    ),
+    action: '/finish',
+    image: '/title.png',
     intents: [
-      <TextInput placeholder="Enter custom fruit..." />,
-      <Button value="apples">Apples</Button>,
-      <Button value="oranges">Oranges</Button>,
-      <Button value="bananas">Bananas</Button>,
-      status === 'response' && <Button.Reset>Reset</Button.Reset>,
-    ],
+      <Button.Transaction target="/challenge">GM</Button.Transaction>,
+    ]
   })
 })
 
-app.use('/*', serveStatic({ root: './public' }))
+app.frame('/finish', (c) => {
+  const { transactionId } = c
+  return c.res({
+    image: '/gmon/01.png', // TODO: Changed everyday
+  })
+})
+
+app.transaction('/challenge', (c) => {
+  return c.contract({
+    abi: GmonsterAbi,
+    chainId: 'eip155:84532', // TODO: To be changed. Base is eip155:10, Base Sepolia is eip155:84532
+    functionName: 'challenge',
+    to: '0x7ca674d4f3579658cd1fba597b92d8d931a493ff' // TODO: To be changed
+  })
+})
 devtools(app, { serveStatic })
 
 if (typeof Bun !== 'undefined') {
