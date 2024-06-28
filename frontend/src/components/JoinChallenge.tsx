@@ -141,15 +141,23 @@ const JoinChallenge = () => {
               {isPending ? <LoadingIndicator /> : "Deposit 0.002ETH"}
             </Button>
           ) : (
-            <Button
-              onClick={() =>
-                window.open("https://warpcast.com/~/channel/gmonster")
-              }
-              className="w-full text-white text-lg py-3 px-6 rounded-full transition duration-300 ease-in-out transform hover:scale-105"
-              style={{ backgroundColor: "#8A63D2" }}
-            >
-              Follow channel on Farcaster
-            </Button>
+            <div className="flex justify-between space-x-2">
+              <Button
+                onClick={() =>
+                  window.open("https://warpcast.com/~/channel/gmonster")
+                }
+                className="w-full text-white text-lg py-3 px-6 rounded-full transition duration-300 ease-in-out transform hover:scale-105"
+                style={{ backgroundColor: "#8A63D2" }}
+              >
+                Follow channel on Farcaster
+              </Button>
+              <Button
+                onClick={() => (window.location.href = "/dashboard")}
+                className="w-full bg-gray-500  text-white text-lg py-3 px-6 rounded-full transition duration-300 ease-in-out transform hover:scale-105"
+              >
+                My Page
+              </Button>
+            </div>
           )}
         </div>
       </div>
