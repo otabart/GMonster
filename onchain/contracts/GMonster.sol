@@ -239,6 +239,7 @@ contract GMonster is Ownable{
     /*//////////////////////////////////////////////////////////////
                              EXTERNAL VIEW
     //////////////////////////////////////////////////////////////*/
+    //If failed, return true
     function judgeFailOrNot(address _challenger) external view returns (bool) {
         Challenge memory _challenge = challenges[_challenger];
         return _judgeFailOrNot(_challenge, block.timestamp);
