@@ -101,6 +101,9 @@ const JoinChallenge = () => {
           });
           setIsDeposited(true);
         },
+        onError(error) {
+          console.error("Deposit error", error);
+        },
       }
     );
   };
