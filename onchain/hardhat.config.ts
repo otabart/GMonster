@@ -17,10 +17,15 @@ const config: HardhatUserConfig = {
       url: "https://sepolia.base.org",
       accounts: process.env.PRIVATE_KEY ? [process.env.PRIVATE_KEY] : [],
     },
+    base: {
+      url: "https://mainnet.base.org",
+      accounts: process.env.PRIVATE_KEY ? [process.env.PRIVATE_KEY] : [],
+    },
   },
   etherscan: {
     apiKey: {
       baseSepolia: process.env.ETHERSCAN_API_KEY!,
+      base: process.env.ETHERSCAN_API_KEY!,
     },
   },
 };

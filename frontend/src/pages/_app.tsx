@@ -5,14 +5,14 @@ import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
 import { ConnectKitProvider, getDefaultConfig } from "connectkit";
 import { useState, useEffect } from "react";
 import Head from "next/head";
-import { baseSepolia, base } from "wagmi/chains";
+import { base } from "wagmi/chains";
 
 const config = createConfig(
   getDefaultConfig({
     // Your dApps chains
-    chains: [baseSepolia],
+    chains: [base],
     transports: {
-      [baseSepolia.id]: http(baseSepolia.rpcUrls.default.http[0]),
+      [base.id]: http(base.rpcUrls.default.http[0]),
     },
     // Required API Keys
     walletConnectProjectId: process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID!,
@@ -32,7 +32,6 @@ const config = createConfig(
 const queryClient = new QueryClient();
 
 function MyApp({ Component, pageProps }: AppProps) {
-
   const [isMobile, setIsMobile] = useState<boolean>(false);
 
   useEffect(() => {
@@ -44,9 +43,9 @@ function MyApp({ Component, pageProps }: AppProps) {
     // Check once on mount
     handleResize();
     // Optionally listen for resize events if you want to dynamically change the view
-    window.addEventListener('resize', handleResize);
+    window.addEventListener("resize", handleResize);
     // Cleanup the event listener on component unmount
-    return () => window.removeEventListener('resize', handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
 
   return (
@@ -55,29 +54,46 @@ function MyApp({ Component, pageProps }: AppProps) {
         <ConnectKitProvider>
           <Head>
             <title>GMonster</title>
-              <meta property='og:title' content='GMonster' />
-              <meta
-                property='og:description'
-                content='GM GM GM GM GM GM GM GM GM GM GM GM'
-              />
-              <meta property='og:image' content='https://gmonster.vercel.app/ogp.png' />
-              <link rel='icon' type='image/png' sizes='16x16' href='/favicon-16x16.png' />
-              <link rel='icon' type='image/png' sizes='32x32' href='/favicon-32x32.png' />
-              <link rel='apple-touch-icon' sizes='200x200' href='/apple-touch-icon.png' />
-              <meta name='twitter:card' content='summary_large_image' />
-              <meta name='twitter:title' content='Monster' />
-              <meta
-                name='twitter:description'
-                content='GM GM GM GM GM GM GM GM GM GM GM GM '
-              />
-              <meta
-                name='twitter:image'
-                content='https://gmonster.vercel.app/ogp.png'
-              />
-            </Head>
-            <div className="bg-white-900 text-default h-auto">
-              <Component {...pageProps} />
-            </div>
+            <meta property="og:title" content="GMonster" />
+            <meta
+              property="og:description"
+              content="GM GM GM GM GM GM GM GM GM GM GM GM"
+            />
+            <meta
+              property="og:image"
+              content="https://gmonster.vercel.app/ogp.png"
+            />
+            <link
+              rel="icon"
+              type="image/png"
+              sizes="16x16"
+              href="/favicon-16x16.png"
+            />
+            <link
+              rel="icon"
+              type="image/png"
+              sizes="32x32"
+              href="/favicon-32x32.png"
+            />
+            <link
+              rel="apple-touch-icon"
+              sizes="200x200"
+              href="/apple-touch-icon.png"
+            />
+            <meta name="twitter:card" content="summary_large_image" />
+            <meta name="twitter:title" content="Monster" />
+            <meta
+              name="twitter:description"
+              content="GM GM GM GM GM GM GM GM GM GM GM GM "
+            />
+            <meta
+              name="twitter:image"
+              content="https://gmonster.vercel.app/ogp.png"
+            />
+          </Head>
+          <div className="bg-white-900 text-default h-auto">
+            <Component {...pageProps} />
+          </div>
         </ConnectKitProvider>
       </QueryClientProvider>
     </WagmiProvider>
