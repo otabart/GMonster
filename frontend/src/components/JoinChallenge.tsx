@@ -53,12 +53,11 @@ const JoinChallenge = () => {
 
   const getEndTimeUnixTimestamp = (): bigint => {
     const [hours, minutes] = endTime.split(":").map(Number);
-    //TODO set correct date
-    const chllengeDate = new Date(Date.UTC(2024, 5, 28)); // Months are 0-indexed, so 4 represents May
-    const chllengeTimestamp = Math.floor(chllengeDate.getTime() / 1000);
+
+    const chllengeTimestamp = Date.UTC(2024, 6, 5, 21, 30) / 1000;
     console.log("chllengeTimestamp", chllengeTimestamp);
 
-    const localEndDate = new Date(2024, 5, 28, hours, minutes);
+    const localEndDate = new Date(2024, 6, 6, hours, minutes);
     let localEndTimestamp = Math.floor(localEndDate.getTime() / 1000);
     console.log("localEndTimestamp", localEndTimestamp);
 

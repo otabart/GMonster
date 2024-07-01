@@ -1,9 +1,10 @@
 import hre from "hardhat";
 
 async function main() {
+  const timestamp = Date.UTC(2024, 6, 5, 21, 30) / 1000;
   await hre.run("verify:verify", {
-    address: "0x8fab92ae3e74fcb2e7d0d4dab446a2c06579a744",
-    constructorArguments: ["0x5F112FC646f8F166E5699CA9EAFe1fC9a9841F36"],
+    address: "0x9d44492232ad68dfd71c4c66510f0a3e0fa1307c",
+    constructorArguments: [timestamp],
   });
 }
 
