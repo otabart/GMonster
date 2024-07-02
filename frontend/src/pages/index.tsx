@@ -104,7 +104,7 @@ const Home: NextPage = () => {
               <p className="text-xl md:text-xl font-bold text-gray-900 mb-6 md:mb-0">
                 This morning challenge gives you something fun to look forward
                 to when you wake up in the morning. GMonster is only available
-                to join by July 5th 4:49 PM PST!
+                to join by July 5th 4:59:59 PM PST!
               </p>
             </div>
             <div className="mt-6 flex justify-center md:mt-0 md:ml-8">

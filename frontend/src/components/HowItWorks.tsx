@@ -2,11 +2,6 @@ import React, { useState } from 'react';
 import HowItWorksItem from './HowItWorksItem';
 
 const HowItWorks: React.FC = () => {
-  const [isVideoLoaded, setIsVideoLoaded] = useState(false);
-
-  const handleVideoLoaded = () => {
-    setIsVideoLoaded(true);
-  };
 
   return (
     <section className="py-12 bg-gray-100">
@@ -39,7 +34,11 @@ const HowItWorks: React.FC = () => {
           <HowItWorksItem
             number="3"
             title="Continue for 21 days"
-            description="Continues for 21 days! If you miss more than 3 days, the deposit will be distributed to other achievers."
+            description={
+              <>
+                Continues for 21 days! <span className="text-red-600">If you miss more than 3 days, the deposit will be distributed to other achievers.</span>
+              </>
+            }
           />
         </div>
         <div className="w-full max-w-xl mx-auto">
@@ -49,7 +48,6 @@ const HowItWorks: React.FC = () => {
               title="YouTube video player"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
               allowFullScreen
-              onLoad={handleVideoLoaded}
               className={"h-80 w-full"}
             ></iframe>
           </div>
